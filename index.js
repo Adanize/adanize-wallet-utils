@@ -91,7 +91,7 @@ export const startCCVault = async() => {
                 window.cardano.ccvault.enable().then((res) => {
                     resolve(res)
                 }).catch((e) => {
-                    reject(null)
+                    reject("We didn't find any wallet selected, open the CCVault extension and select a wallet on the left side from the wallet listing.")
                 })
             }
         }, 500)
