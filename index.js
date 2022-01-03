@@ -72,7 +72,9 @@ export const startNami = async() => {
                 instance.then((res) => {
                     resolve(window.cardano)
                 }).catch((e) => {
-                    reject(null)
+                    reject({
+                        error: e.message,
+                    })
                 })
             }
         }, 500)
@@ -91,7 +93,9 @@ export const startCCVault = async() => {
                 window.cardano.ccvault.enable().then((res) => {
                     resolve(res)
                 }).catch((e) => {
-                    reject("We didn't find any wallet selected, open the CCVault extension and select a wallet on the left side from the wallet listing.")
+                    reject({
+                        error: e.message == "no account set" ? "we didn't find any wallet selected, open the CCVault extension and select a wallet on the left side from the wallet listing." : e.message,
+                    })
                 })
             }
         }, 500)
