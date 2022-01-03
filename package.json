@@ -8,5 +8,10 @@
         "buffer": "^6.0.3",
         "cbor": "^8.1.0",
         "web3-cardano-token": "0.0.11"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Adanize/adanize-wallet-utils"
     }
 }
