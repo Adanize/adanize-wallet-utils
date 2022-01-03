@@ -99,7 +99,7 @@ export const startCCVault = async() => {
 };
 
 /**
- * 
+ * Return the balance string with base on wallet
  * @param {string} wallet nami, ccvault
  * @returns string
  */
@@ -360,7 +360,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
  * @param {string} days days to expire
  * @returns string
  */
-export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Panel", days = "7300") => {
+export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Panel", body = {}, days = "7300") => {
     let instance, addrHex
 
     if (wallet == "nami") {
@@ -381,7 +381,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Pa
         }
     }
 
-    const token = await Web3Token.sign(msg => instance.signData(addrHex, message.hexEncode()), days + 'd');
+    const token = await Web3Token.sign(msg => instance.signData(addrHex, message.hexEncode()), days + 'd', body);
 
     return token
 };
