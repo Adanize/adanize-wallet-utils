@@ -99,6 +99,26 @@ export const startCCVault = async() => {
 };
 
 /**
+ * 
+ * @param {string} wallet nami, ccvault
+ * @returns string
+ */
+export const getBalanceString = async(wallet = "nami") => {
+    let instance, balance
+
+    if (wallet == "nami") {
+        instance = await startNami()
+    } else if (wallet == "ccvault") {
+        instance = await startCCVault()
+    } else {
+        return null
+    }
+
+    balance = await instance.getBalance()
+    return balance
+};
+
+/**
  * Lists all NFTs in a wallet
  * Compatible wallets: Nami, CCVault (extension)
  * @param {*} balance result from wallet.getBalance
