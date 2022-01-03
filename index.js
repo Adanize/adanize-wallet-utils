@@ -72,9 +72,7 @@ export const startNami = async() => {
                 instance.then((res) => {
                     resolve(window.cardano)
                 }).catch((e) => {
-                    reject({
-                        error: e.message,
-                    })
+                    reject(e)
                 })
             }
         }, 500)
@@ -93,9 +91,7 @@ export const startCCVault = async() => {
                 window.cardano.ccvault.enable().then((res) => {
                     resolve(res)
                 }).catch((e) => {
-                    reject({
-                        error: e.message == "no account set" ? "we didn't find any wallet selected, open the CCVault extension and select a wallet on the left side from the wallet listing." : e.message,
-                    })
+                    reject(e)
                 })
             }
         }, 500)
@@ -344,7 +340,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
  * @param {string} days days to expire
  * @returns string
  */
-export const getTokenAuth = async(wallet = 'nami', msg = "Sign on Adanize Panel", days = "7300") => {
+export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Panel", days = "7300") => {
     let instance, addrHex
 
     if (wallet == "nami") {
@@ -365,7 +361,7 @@ export const getTokenAuth = async(wallet = 'nami', msg = "Sign on Adanize Panel"
         }
     }
 
-    const token = await Web3Token.sign(msg => instance.signData(addrHex, msg.hexEncode()), days + 'd');
+    const token = await Web3Token.sign(msg => instance.signData(addrHex, message.hexEncode()), days + 'd');
 
     return token
 };
