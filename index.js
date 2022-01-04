@@ -80,7 +80,11 @@ export const startNami = async() => {
                 })
             } else {
                 clearInterval(namiInterval)
-                reject("The Nami Wallet extension does not seem to be installed on your browser, go to namiwallet.io and install it.")
+                reject({
+                    code: 404,
+                    message: "wallet not installed",
+                    wallet_key: namiKey
+                })
             }
         }, 500)
     });
@@ -102,7 +106,11 @@ export const startCCVault = async() => {
                 })
             } else {
                 clearInterval(ccvaultInterval)
-                reject("The CCVault extension does not seem to be installed on your browser, go to ccvault.io and install it.")
+                reject({
+                    code: 404,
+                    message: "wallet not installed",
+                    wallet_key: ccvaultKey
+                })
             }
         }, 500)
     });
@@ -124,7 +132,11 @@ export const startGeroWallet = async() => {
                 })
             } else {
                 clearInterval(geroInterval)
-                reject("The Gero Wallet extension does not seem to be installed on your browser, go to gerowallet.io and install it.")
+                reject({
+                    code: 404,
+                    message: "wallet not installed",
+                    wallet_key: geroKey
+                })
             }
         }, 500)
     });
