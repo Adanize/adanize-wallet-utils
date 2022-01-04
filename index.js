@@ -3,6 +3,10 @@ import * as wasm from '@emurgo/cardano-serialization-lib-asmjs'
 import Web3Token from 'web3-cardano-token/dist/browser';
 // import cbor from 'cbor'
 
+const namiKey = "nami"
+const ccvaultKey = "ccvault"
+const geroKey = "gero"
+
 /**
  * Convert hex to bytes
  * @param {*} hex
@@ -74,6 +78,9 @@ export const startNami = async() => {
                 }).catch((e) => {
                     reject(e)
                 })
+            } else {
+                clearInterval(namiInterval)
+                reject("The Nami Wallet extension does not seem to be installed on your browser, go to namiwallet.io and install it.")
             }
         }, 500)
     });
@@ -93,6 +100,31 @@ export const startCCVault = async() => {
                 }).catch((e) => {
                     reject(e)
                 })
+            } else {
+                clearInterval(ccvaultInterval)
+                reject("The CCVault extension does not seem to be installed on your browser, go to ccvault.io and install it.")
+            }
+        }, 500)
+    });
+};
+
+/**
+ * Connect in Gero Wallet and return instance if success
+ * @returns mixed
+ */
+export const startGeroWallet = async() => {
+    return await new Promise((resolve, reject) => {
+        const geroInterval = setInterval(() => {
+            if (typeof(window.cardano.gero) !== "undefined" && typeof(window.cardano.gero.enable) !== "undefined") {
+                clearInterval(geroInterval)
+                window.cardano.gero.enable().then((res) => {
+                    resolve(res)
+                }).catch((e) => {
+                    reject(e)
+                })
+            } else {
+                clearInterval(geroInterval)
+                reject("The Gero Wallet extension does not seem to be installed on your browser, go to gerowallet.io and install it.")
             }
         }, 500)
     });
@@ -106,10 +138,12 @@ export const startCCVault = async() => {
 export const getBalanceString = async(wallet = "nami") => {
     let instance, balance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -127,10 +161,12 @@ export const getBalanceString = async(wallet = "nami") => {
 export const getNfts = async(wallet = "nami") => {
     let instance, balance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -175,10 +211,12 @@ export const getNfts = async(wallet = "nami") => {
 export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
     let instance, balance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -212,10 +250,12 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
 export const getTotalInWallet = async(wallet = "nami") => {
     let instance, balance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -263,10 +303,12 @@ export const getAddressString = async(data) => {
 export const getUsedAddressString = async(wallet = 'nami') => {
     let instance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -284,10 +326,12 @@ export const getUsedAddressString = async(wallet = 'nami') => {
 export const getChangeAddressString = async(wallet = 'nami') => {
     let instance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -305,10 +349,12 @@ export const getChangeAddressString = async(wallet = 'nami') => {
 export const getUnusedAddressString = async(wallet = 'nami') => {
     let instance
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -331,10 +377,12 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
 export const getRewardAddressString = async(wallet = 'nami') => {
     let instance, addrHex
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
@@ -363,10 +411,12 @@ export const getRewardAddressString = async(wallet = 'nami') => {
 export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Panel", body = {}, days = "7300") => {
     let instance, addrHex
 
-    if (wallet == "nami") {
+    if (wallet == namiKey) {
         instance = await startNami()
-    } else if (wallet == "ccvault") {
+    } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGeroWallet()
     } else {
         return null
     }
