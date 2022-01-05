@@ -123,9 +123,9 @@ export const startCCVault = async() => {
 export const startGeroWallet = async() => {
     return await new Promise((resolve, reject) => {
         const geroInterval = setInterval(() => {
-            if (typeof(window.cardano.gero) !== "undefined" && typeof(window.cardano.gero.enable) !== "undefined") {
+            if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
                 clearInterval(geroInterval)
-                window.cardano.gero.enable().then((res) => {
+                window.cardano.gerowallet.enable().then((res) => {
                     resolve(res)
                 }).catch((e) => {
                     reject(e)
