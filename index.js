@@ -81,7 +81,7 @@ export const startNami = async() => {
             } else {
                 clearInterval(namiInterval)
                 reject({
-                    code: 404,
+                    code: -10,
                     message: "wallet not installed",
                     wallet_key: namiKey
                 })
@@ -107,7 +107,7 @@ export const startCCVault = async() => {
             } else {
                 clearInterval(ccvaultInterval)
                 reject({
-                    code: 404,
+                    code: -10,
                     message: "wallet not installed",
                     wallet_key: ccvaultKey
                 })
@@ -133,7 +133,7 @@ export const startGeroWallet = async() => {
             } else {
                 clearInterval(geroInterval)
                 reject({
-                    code: 404,
+                    code: -10,
                     message: "wallet not installed",
                     wallet_key: geroKey
                 })
