@@ -61,6 +61,9 @@ String.prototype.hexDecode = function() {
  */
 export const startNami = async() => {
     return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject(e)
+        }
         try {
             const namiInterval = setInterval(() => {
                 if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
@@ -108,6 +111,9 @@ export const startNami = async() => {
  */
 export const startCCVault = async() => {
     return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject(e)
+        }
         try {
             const ccvaultInterval = setInterval(() => {
                 if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
@@ -138,6 +144,9 @@ export const startCCVault = async() => {
  */
 export const startGeroWallet = async() => {
     return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject(e)
+        }
         try {
             const geroInterval = setInterval(() => {
                 if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
