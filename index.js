@@ -70,31 +70,40 @@ export const startNami = async() => {
         }
         try {
             const namiInterval = setInterval(() => {
-                if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
-                    clearInterval(namiInterval)
+                try {
+                    if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
+                        clearInterval(namiInterval)
 
-                    let instance
+                        let instance
 
-                    if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
-                        try {
-                            instance = window.cardano.nami.enable()
-                        } catch (error) {
-                            reject(e)
+                        if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
+                            try {
+                                instance = window.cardano.nami.enable()
+                            } catch (error) {
+                                reject(e)
+                            }
+                        } else {
+                            try {
+                                instance = window.cardano.enable()
+                            } catch (error) {
+                                reject(e)
+                            }
                         }
+
+                        instance.then((res) => {
+                            resolve(window.cardano)
+                        }).catch((e) => {
+                            reject(e)
+                        })
                     } else {
-                        try {
-                            instance = window.cardano.enable()
-                        } catch (error) {
-                            reject(e)
-                        }
+                        clearInterval(namiInterval)
+                        reject({
+                            code: -10,
+                            message: "wallet not installed",
+                            wallet_key: namiKey
+                        })
                     }
-
-                    instance.then((res) => {
-                        resolve(window.cardano)
-                    }).catch((e) => {
-                        reject(e)
-                    })
-                } else {
+                } catch (error) {
                     clearInterval(namiInterval)
                     reject({
                         code: -10,
@@ -119,19 +128,28 @@ export const startCCVault = async() => {
             reject({
                 code: -10,
                 message: "wallet not installed",
-                wallet_key: namiKey
+                wallet_key: ccvaultKey
             })
         }
         try {
             const ccvaultInterval = setInterval(() => {
-                if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
-                    clearInterval(ccvaultInterval)
-                    window.cardano.ccvault.enable().then((res) => {
-                        resolve(res)
-                    }).catch((e) => {
-                        reject(e)
-                    })
-                } else {
+                try {
+                    if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
+                        clearInterval(ccvaultInterval)
+                        window.cardano.ccvault.enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            reject(e)
+                        })
+                    } else {
+                        clearInterval(ccvaultInterval)
+                        reject({
+                            code: -10,
+                            message: "wallet not installed",
+                            wallet_key: ccvaultKey
+                        })
+                    }
+                } catch (error) {
                     clearInterval(ccvaultInterval)
                     reject({
                         code: -10,
@@ -156,19 +174,28 @@ export const startGeroWallet = async() => {
             reject({
                 code: -10,
                 message: "wallet not installed",
-                wallet_key: namiKey
+                wallet_key: geroKey
             })
         }
         try {
             const geroInterval = setInterval(() => {
-                if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
-                    clearInterval(geroInterval)
-                    window.cardano.gerowallet.enable().then((res) => {
-                        resolve(res)
-                    }).catch((e) => {
-                        reject(e)
-                    })
-                } else {
+                try {
+                    if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
+                        clearInterval(geroInterval)
+                        window.cardano.gerowallet.enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            reject(e)
+                        })
+                    } else {
+                        clearInterval(geroInterval)
+                        reject({
+                            code: -10,
+                            message: "wallet not installed",
+                            wallet_key: geroKey
+                        })
+                    }
+                } catch (error) {
                     clearInterval(geroInterval)
                     reject({
                         code: -10,
@@ -455,7 +482,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
 };
 
 /**
- * 
+ *
  * @param {string} wallet nami, ccvault
  * @param {string} msg custom message for sign
  * @param {string} days days to expire
