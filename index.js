@@ -62,7 +62,11 @@ String.prototype.hexDecode = function() {
 export const startNami = async() => {
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
-            reject(e)
+            reject({
+                code: -10,
+                message: "wallet not installed",
+                wallet_key: namiKey
+            })
         }
         try {
             const namiInterval = setInterval(() => {
@@ -112,7 +116,11 @@ export const startNami = async() => {
 export const startCCVault = async() => {
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
-            reject(e)
+            reject({
+                code: -10,
+                message: "wallet not installed",
+                wallet_key: namiKey
+            })
         }
         try {
             const ccvaultInterval = setInterval(() => {
@@ -145,7 +153,11 @@ export const startCCVault = async() => {
 export const startGeroWallet = async() => {
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
-            reject(e)
+            reject({
+                code: -10,
+                message: "wallet not installed",
+                wallet_key: namiKey
+            })
         }
         try {
             const geroInterval = setInterval(() => {
