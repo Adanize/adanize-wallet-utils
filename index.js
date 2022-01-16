@@ -61,32 +61,44 @@ String.prototype.hexDecode = function() {
  */
 export const startNami = async() => {
     return await new Promise((resolve, reject) => {
-        const namiInterval = setInterval(() => {
-            if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
-                clearInterval(namiInterval)
+        try {
+            const namiInterval = setInterval(() => {
+                if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
+                    clearInterval(namiInterval)
 
-                let instance
+                    let instance
 
-                if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
-                    instance = window.cardano.nami.enable()
+                    if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
+                        try {
+                            instance = window.cardano.nami.enable()
+                        } catch (error) {
+                            reject(e)
+                        }
+                    } else {
+                        try {
+                            instance = window.cardano.enable()
+                        } catch (error) {
+                            reject(e)
+                        }
+                    }
+
+                    instance.then((res) => {
+                        resolve(window.cardano)
+                    }).catch((e) => {
+                        reject(e)
+                    })
                 } else {
-                    instance = window.cardano.enable()
+                    clearInterval(namiInterval)
+                    reject({
+                        code: -10,
+                        message: "wallet not installed",
+                        wallet_key: namiKey
+                    })
                 }
-
-                instance.then((res) => {
-                    resolve(window.cardano)
-                }).catch((e) => {
-                    reject(e)
-                })
-            } else {
-                clearInterval(namiInterval)
-                reject({
-                    code: -10,
-                    message: "wallet not installed",
-                    wallet_key: namiKey
-                })
-            }
-        }, 500)
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
     });
 };
 
@@ -96,23 +108,27 @@ export const startNami = async() => {
  */
 export const startCCVault = async() => {
     return await new Promise((resolve, reject) => {
-        const ccvaultInterval = setInterval(() => {
-            if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
-                clearInterval(ccvaultInterval)
-                window.cardano.ccvault.enable().then((res) => {
-                    resolve(res)
-                }).catch((e) => {
-                    reject(e)
-                })
-            } else {
-                clearInterval(ccvaultInterval)
-                reject({
-                    code: -10,
-                    message: "wallet not installed",
-                    wallet_key: ccvaultKey
-                })
-            }
-        }, 500)
+        try {
+            const ccvaultInterval = setInterval(() => {
+                if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
+                    clearInterval(ccvaultInterval)
+                    window.cardano.ccvault.enable().then((res) => {
+                        resolve(res)
+                    }).catch((e) => {
+                        reject(e)
+                    })
+                } else {
+                    clearInterval(ccvaultInterval)
+                    reject({
+                        code: -10,
+                        message: "wallet not installed",
+                        wallet_key: ccvaultKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
     });
 };
 
@@ -122,23 +138,27 @@ export const startCCVault = async() => {
  */
 export const startGeroWallet = async() => {
     return await new Promise((resolve, reject) => {
-        const geroInterval = setInterval(() => {
-            if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
-                clearInterval(geroInterval)
-                window.cardano.gerowallet.enable().then((res) => {
-                    resolve(res)
-                }).catch((e) => {
-                    reject(e)
-                })
-            } else {
-                clearInterval(geroInterval)
-                reject({
-                    code: -10,
-                    message: "wallet not installed",
-                    wallet_key: geroKey
-                })
-            }
-        }, 500)
+        try {
+            const geroInterval = setInterval(() => {
+                if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
+                    clearInterval(geroInterval)
+                    window.cardano.gerowallet.enable().then((res) => {
+                        resolve(res)
+                    }).catch((e) => {
+                        reject(e)
+                    })
+                } else {
+                    clearInterval(geroInterval)
+                    reject({
+                        code: -10,
+                        message: "wallet not installed",
+                        wallet_key: geroKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
     });
 };
 
@@ -420,7 +440,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
  * @param {string} days days to expire
  * @returns string
  */
-export const getTokenAuth = async(wallet = 'nami', message = "Sign on Adanize Panel", body = {}, days = "7300") => {
+export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet", body = {}, days = "7300") => {
     let instance, addrHex
 
     if (wallet == namiKey) {
