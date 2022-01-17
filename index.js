@@ -71,7 +71,7 @@ export const startNami = async() => {
         try {
             const namiInterval = setInterval(() => {
                 try {
-                    if (typeof(window.cardano.enable) !== "undefined" || (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined")) {
+                    if ((typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") || typeof(window.cardano.enable) !== "undefined") {
                         clearInterval(namiInterval)
 
                         let instance
@@ -91,7 +91,7 @@ export const startNami = async() => {
                         }
 
                         instance.then((res) => {
-                            resolve(window.cardano)
+                            resolve(res === true ? window.cardano : res)
                         }).catch((e) => {
                             reject(e)
                         })
