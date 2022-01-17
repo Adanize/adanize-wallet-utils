@@ -1,6 +1,6 @@
 import * as wasm from '@emurgo/cardano-serialization-lib-asmjs'
 // import Base64 from "base-64";
-import Web3Token from 'web3-cardano-token/dist/browser';
+import Web3Token from './browser';
 // import cbor from 'cbor'
 
 const namiKey = "nami"
@@ -509,6 +509,10 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         } catch (error) {
             return null
         }
+    }
+
+    if (typeof(addrHex) == "object") {
+        addrHex = addrHex[0]
     }
 
     const token = await Web3Token.sign(msg => instance.signData(addrHex, message.hexEncode()), days + 'd', body);
