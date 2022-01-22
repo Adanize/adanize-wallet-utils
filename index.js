@@ -632,7 +632,27 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
  * @param {*} type result from wallet.getNetworkId
  * @returns string
  */
-export const getNetworkString = async(type) => {
+export const getNetworkString = async(wallet = "nami") => {
+    let instance, nw
+
+    if (wallet == namiKey) {
+        instance = await startNami()
+    } else if (wallet == ccvaultKey) {
+        instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
+    } else {
+        return null
+    }
+
+    try {
+        nw = await instance.getNetworkId()
+    } catch (error) {
+        return
+    }
+
     let network = ["testnet", "mainnet"]
-    return network[type]
+    return network[nw]
 };
