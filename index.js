@@ -6,6 +6,7 @@ import Web3Token from './browser';
 const namiKey = "nami"
 const ccvaultKey = "ccvault"
 const geroKey = "gero"
+const flintKey = "flint"
 
 /**
  * Convert hex to bytes
@@ -60,27 +61,37 @@ String.prototype.hexDecode = function() {
  * @returns mixed
  */
 export const startNami = async() => {
+    let messageNotInstalled = 'The Nami Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo" target="_blank" class="font-bold">Install it</a>.'
+
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
             reject({
                 code: -10,
-                message: "wallet not installed",
+                message: messageNotInstalled,
                 wallet_key: namiKey
             })
         }
         try {
-            const namiInterval = setInterval(() => {
+            const interval = setInterval(() => {
                 try {
                     if ((typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") || typeof(window.cardano.enable) !== "undefined") {
-                        clearInterval(namiInterval)
+                        clearInterval(interval)
 
                         let instance
 
                         if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
                             try {
                                 instance = window.cardano.nami.enable()
-                            } catch (error) {
-                                reject(e)
+                            } catch (e) {
+                                if (e.code == -2) {
+                                    reject({
+                                        code: -2,
+                                        message: 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!',
+                                        wallet_key: namiKey
+                                    })
+                                } else {
+                                    reject(e)
+                                }
                             }
                         } else {
                             try {
@@ -96,18 +107,18 @@ export const startNami = async() => {
                             reject(e)
                         })
                     } else {
-                        clearInterval(namiInterval)
+                        clearInterval(interval)
                         reject({
                             code: -10,
-                            message: "wallet not installed",
+                            message: messageNotInstalled,
                             wallet_key: namiKey
                         })
                     }
                 } catch (error) {
-                    clearInterval(namiInterval)
+                    clearInterval(interval)
                     reject({
                         code: -10,
-                        message: "wallet not installed",
+                        message: messageNotInstalled,
                         wallet_key: namiKey
                     })
                 }
@@ -123,38 +134,105 @@ export const startNami = async() => {
  * @returns mixed
  */
 export const startCCVault = async() => {
+    let messageNotInstalled = 'The CCVault Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/ccvaultio/kmhcihpebfmpgmihbkipmjlmmioameka" target="_blank" class="font-bold">Install it</a>.'
+
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
             reject({
                 code: -10,
-                message: "wallet not installed",
+                message: messageNotInstalled,
                 wallet_key: ccvaultKey
             })
         }
         try {
-            const ccvaultInterval = setInterval(() => {
+            const interval = setInterval(() => {
                 try {
                     if (typeof(window.cardano.ccvault) !== "undefined" && typeof(window.cardano.ccvault.enable) !== "undefined") {
-                        clearInterval(ccvaultInterval)
+                        clearInterval(interval)
                         window.cardano.ccvault.enable().then((res) => {
                             resolve(res)
                         }).catch((e) => {
-                            reject(e)
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: 'An error occurred during execution of this API call. At CCVault you may not have a selected account in your wallet or you may not have activated the DApp Account mode. If so, you can activate it by opening your wallet, clicking on the "Account" tab and then on "Enable DApp Account". After verifying what happened, refresh this page and try again!',
+                                    wallet_key: ccvaultKey
+                                })
+                            } else {
+                                reject(e)
+                            }
                         })
                     } else {
-                        clearInterval(ccvaultInterval)
+                        clearInterval(interval)
                         reject({
                             code: -10,
-                            message: "wallet not installed",
+                            message: messageNotInstalled,
                             wallet_key: ccvaultKey
                         })
                     }
                 } catch (error) {
-                    clearInterval(ccvaultInterval)
+                    clearInterval(interval)
                     reject({
                         code: -10,
-                        message: "wallet not installed",
+                        message: messageNotInstalled,
                         wallet_key: ccvaultKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+
+/**
+ * Connect in Flint and return instance if success
+ * @returns mixed
+ */
+export const startFlint = async() => {
+    let messageNotInstalled = 'The Flint Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/flint/hnhobjmcibchnmglfbldbfabcgaknlkj" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: flintKey
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window.cardano.flint) !== "undefined" && typeof(window.cardano.flint.enable) !== "undefined") {
+                        clearInterval(interval)
+                        window.cardano.flint.enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!',
+                                    wallet_key: flintKey
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: flintKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: flintKey
                     })
                 }
             }, 500)
@@ -168,39 +246,49 @@ export const startCCVault = async() => {
  * Connect in Gero Wallet and return instance if success
  * @returns mixed
  */
-export const startGeroWallet = async() => {
+export const startGero = async() => {
+    let messageNotInstalled = 'The Gero Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/gerowallet/bgpipimickeadkjlklgciifhnalhdjhe" target="_blank" class="font-bold">Install it</a>.'
+
     return await new Promise((resolve, reject) => {
         if (typeof(window.cardano) == "undefined") {
             reject({
                 code: -10,
-                message: "wallet not installed",
+                message: messageNotInstalled,
                 wallet_key: geroKey
             })
         }
         try {
-            const geroInterval = setInterval(() => {
+            const interval = setInterval(() => {
                 try {
                     if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
-                        clearInterval(geroInterval)
+                        clearInterval(interval)
                         window.cardano.gerowallet.enable().then((res) => {
                             resolve(res)
                         }).catch((e) => {
-                            reject(e)
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!',
+                                    wallet_key: geroKey
+                                })
+                            } else {
+                                reject(e)
+                            }
                         })
                     } else {
-                        clearInterval(geroInterval)
+                        clearInterval(interval)
                         reject({
                             code: -10,
-                            message: "wallet not installed",
-                            wallet_key: geroKey
+                            message: messageNotInstalled,
+                            wallet_key: flintKey
                         })
                     }
                 } catch (error) {
-                    clearInterval(geroInterval)
+                    clearInterval(interval)
                     reject({
                         code: -10,
-                        message: "wallet not installed",
-                        wallet_key: geroKey
+                        message: messageNotInstalled,
+                        wallet_key: flintKey
                     })
                 }
             }, 500)
@@ -223,7 +311,9 @@ export const getBalanceString = async(wallet = "nami") => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -246,7 +336,9 @@ export const getNfts = async(wallet = "nami") => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -296,7 +388,9 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -335,7 +429,9 @@ export const getTotalInWallet = async(wallet = "nami") => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -388,7 +484,9 @@ export const getUsedAddressString = async(wallet = 'nami') => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -411,7 +509,9 @@ export const getChangeAddressString = async(wallet = 'nami') => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -434,7 +534,9 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -462,7 +564,9 @@ export const getRewardAddressString = async(wallet = 'nami') => {
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
@@ -496,7 +600,9 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
     } else if (wallet == ccvaultKey) {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
-        instance = await startGeroWallet()
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
     } else {
         return null
     }
