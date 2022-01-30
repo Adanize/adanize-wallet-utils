@@ -324,7 +324,7 @@ export const getBalanceString = async(wallet = "nami") => {
 
 /**
  * Lists all NFTs in a wallet
- * Compatible wallets: Nami, CCVault (extension)
+ * Compatible wallets: Nami, CCVault, Gero, Flint, Typhon
  * @param {*} balance result from wallet.getBalance
  * @returns object
  */
@@ -374,7 +374,7 @@ export const getNfts = async(wallet = "nami") => {
 
 /**
  * Search for NFTs in the wallet
- * Compatible wallets: Nami, CCVault (extension)
+ * Compatible wallets: Nami, CCVault, Gero, Flint, Typhon
  * @param {*} balance result from wallet.getBalance
  * @param {string} query data to be fetched, using % at the start will search for any record that contains the data.
  * @param {string} type name of column to be searched: token, asset_hex, asset_name, policy_id
@@ -417,7 +417,7 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
 
 /**
  * Returns the total in the wallet
- * Compatible wallets: Nami, CCVault (extension)
+ * Compatible wallets: Nami, CCVault, Gero, Flint, Typhon
  * @param {*} balance result from wallet.getBalance
  * @returns object
  */
@@ -461,7 +461,7 @@ export const getTotalInWallet = async(wallet = "nami") => {
 
 /**
  * Returns formatted address, ready to use
- * Compatible wallets: Nami, CCVault (extension)
+ * Compatible wallets: Nami, CCVault, Gero, Flint, Typhon
  * @param {*} data result from: wallet.getUsedAddresses, wallet.getUnusedAddresses, wallet.getChangeAddress, wallet.getRewardAddresses
  * @returns string
  */
@@ -473,6 +473,7 @@ export const getAddressString = async(data) => {
 
 /**
  * Get only one used address
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {string} wallet nami, ccvault
  * @returns mixed
  */
@@ -498,6 +499,7 @@ export const getUsedAddressString = async(wallet = 'nami') => {
 
 /**
  * Get only one change address
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {string} wallet nami, ccvault
  * @returns mixed
  */
@@ -523,6 +525,7 @@ export const getChangeAddressString = async(wallet = 'nami') => {
 
 /**
  * Get only one unused address
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {string} wallet nami, ccvault
  * @returns mixed
  */
@@ -553,6 +556,7 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
 
 /**
  * Get only one reward address
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {string} wallet nami, ccvault
  * @returns mixed
  */
@@ -586,7 +590,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
 };
 
 /**
- *
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {string} wallet nami, ccvault
  * @param {string} msg custom message for sign
  * @param {string} days days to expire
@@ -628,7 +632,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
 
 /**
  * Returns the name of which network the wallet is using
- * Compatible wallets: Nami, CCVault (extension)
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
  * @param {*} type result from wallet.getNetworkId
  * @returns string
  */
@@ -655,4 +659,28 @@ export const getNetworkString = async(wallet = "nami") => {
 
     let network = ["testnet", "mainnet"]
     return network[nw]
+};
+
+/**
+ * Extend wallet methods
+ * Compatible data from wallets: Nami, CCVault, Gero, Flint
+ * @param {string} wallet 
+ * @returns mixed
+ */
+export const extend = async(wallet = "nami") => {
+    let instance
+
+    if (wallet == namiKey) {
+        instance = await startNami()
+    } else if (wallet == ccvaultKey) {
+        instance = await startCCVault()
+    } else if (wallet == geroKey) {
+        instance = await startGero()
+    } else if (wallet == flintKey) {
+        instance = await startFlint()
+    } else {
+        return null
+    }
+
+    return instance
 };
