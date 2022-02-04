@@ -6,6 +6,8 @@ const namiKey = "nami"
 const ccvaultKey = "ccvault"
 const geroKey = "gero"
 const flintKey = "flint"
+const typhonKey = "typhon"
+const yoroiKey = "yoroi"
 
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
 
@@ -233,7 +235,7 @@ export const startGero = async() => {
                         reject({
                             code: -10,
                             message: messageNotInstalled,
-                            wallet_key: flintKey
+                            wallet_key: geroKey
                         })
                     }
                 } catch (error) {
@@ -241,7 +243,128 @@ export const startGero = async() => {
                     reject({
                         code: -10,
                         message: messageNotInstalled,
-                        wallet_key: flintKey
+                        wallet_key: geroKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Connect in Yoroi Wallet and return instance if success
+ * @returns mixed
+ */
+export const startYoroi = async() => {
+    let messageNotInstalled = 'The Yoroi Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/yoroi/ffnbelfdoeiohenkjibnmadjiehjhajb" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: geroKey
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window.cardano.yoroi) !== "undefined" && typeof(window.cardano.yoroi.enable) !== "undefined") {
+                        clearInterval(interval)
+                        window.cardano.yoroi.enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: messageCode2,
+                                    wallet_key: yoroiKey
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: yoroiKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: yoroiKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+
+/**
+ * Connect in Typhon Wallet and return instance if success
+ * @returns mixed
+ */
+export const startTyphon = async() => {
+    let messageNotInstalled = 'The Typhon Wallet extension does not seem to be installed on your browser. <a href="https://typhonwallet.io/#/download" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.cardano) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: typhonKey
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window.cardano.typhon) !== "undefined" && typeof(window.cardano.typhon.enable) !== "undefined") {
+                        clearInterval(interval)
+                        window.cardano.typhon.enable().then((res) => {
+                            if (res.status) {
+                                resolve(window.cardano.typhon)
+                            } else {
+                                reject({
+                                    code: -2,
+                                    message: messageCode2,
+                                    wallet_key: typhonKey
+                                })
+                            }
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: messageCode2,
+                                    wallet_key: typhonKey
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: typhonKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: typhonKey
                     })
                 }
             }, 500)
@@ -259,7 +382,6 @@ export const startGero = async() => {
  */
 export const getBalanceString = async(wallet = "nami") => {
     let instance, balance
-
     if (wallet == namiKey) {
         instance = await startNami()
     } else if (wallet == ccvaultKey) {
@@ -268,6 +390,8 @@ export const getBalanceString = async(wallet = "nami") => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
@@ -293,6 +417,8 @@ export const getNfts = async(wallet = "nami") => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
@@ -345,6 +471,8 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
@@ -384,13 +512,34 @@ export const getTotalInWallet = async(wallet = "nami") => {
         instance = await startCCVault()
     } else if (wallet == geroKey) {
         instance = await startGero()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == typhonKey) {
+        instance = await startTyphon()
     } else {
         return null
     }
 
     balance = await instance.getBalance()
+
+    if (wallet == typhonKey) {
+        return {
+            locked: {
+                decimal: 0,
+                lovelace: 0
+            },
+            total: {
+                decimal: 0,
+                lovelace: 0
+            },
+            total_free: {
+                decimal: int(balance.data.ada) / 1000000,
+                lovelace: int(balance.data.ada)
+            },
+        };
+    }
 
     const value = wasm.Value.from_bytes(Buffer.from(balance, "hex"))
     const locked = wasm.min_ada_required(value, wasm.BigNum.from_str('1000000'))
@@ -442,6 +591,22 @@ export const getUsedAddressString = async(wallet = 'nami') => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
+    } else if (wallet == typhonKey) {
+        // In Typhon the address is not returned as in CIP-0030, so it must be called differently
+        instance = await startTyphon()
+        let typhonAddr = await instance.getAddress()
+
+        if (typeof(typhonAddr) === "object" && typeof(typhonAddr.data) !== "undefined") {
+            if (typeof(typhonAddr.data) === "object") {
+                return typhonAddr.data[0]
+            } else {
+                return typhonAddr.data || typhonAddr['data']
+            }
+        } else {
+            return null
+        }
     } else {
         return null
     }
@@ -468,6 +633,12 @@ export const getChangeAddressString = async(wallet = 'nami') => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
+    } else if (wallet == typhonKey) {
+        // Typhon does not have the method getChangeAddress used in CIP-0030, so it returns the normal address
+        instance = await getUsedAddressString('typhon')
+        return instance
     } else {
         return null
     }
@@ -494,6 +665,11 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
+    } else if (wallet == typhonKey) {
+        // Typhon does not have the method getUnusedAddresses used in CIP-0030
+        return null
     } else {
         return null
     }
@@ -525,6 +701,8 @@ export const getRewardAddressString = async(wallet = 'nami') => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
@@ -562,6 +740,8 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
@@ -602,12 +782,21 @@ export const getNetworkString = async(wallet = "nami") => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == typhonKey) {
+        instance = await startTyphon()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
     } else {
         return null
     }
 
     try {
         nw = await instance.getNetworkId()
+
+        // In Typhon the network is returned as an object inside the "data" key
+        if (typeof(nw) === "object" && typeof(nw.data) !== "undefined") {
+            nw = nw.data
+        }
     } catch (error) {
         return
     }
@@ -633,6 +822,10 @@ export const extend = async(wallet = "nami") => {
         instance = await startGero()
     } else if (wallet == flintKey) {
         instance = await startFlint()
+    } else if (wallet == yoroiKey) {
+        instance = await startYoroi()
+    } else if (wallet == typhonKey) {
+        instance = await startTyphon()
     } else {
         return null
     }
