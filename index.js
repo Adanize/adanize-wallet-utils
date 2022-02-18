@@ -1,6 +1,7 @@
 import * as wasm from '@emurgo/cardano-serialization-lib-asmjs'
 import Web3Token from './browser'
 import { Buffer } from 'buffer'
+import * as Web3 from 'web3'
 
 const namiKey = "nami"
 const ccvaultKey = "ccvault"
@@ -945,4 +946,56 @@ export const extend = async(wallet = "nami") => {
     }
 
     return instance
+};
+
+
+/**
+ * Verify has metamask installed
+ * @returns boolean
+ */
+export const metamaskIsInstalled = async() => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			if (typeof(window.ethereum) !== 'undefined') {
+				resolve(true)
+			} else {
+				resolve(false)
+			}
+		}, 100)
+	})
+};
+
+
+/**
+ * Get metamask address
+ * @param {string} chain
+ * @returns string
+ */
+export const metamaskGetAddress = async(chain = "eth", getAll = false) => {
+	let hasMetamask = await metamaskIsInstalled()
+	if (!hasMetamask) {
+		throw 'Metamask not installed.'
+	}
+
+	let web3 = new Web3(window.ethereum)
+
+    let metamaskUnlocked = await window.ethereum._metamask.isUnlocked()
+	if (!metamaskUnlocked) {
+		throw 'Your metamask is locked.'
+	}
+
+	let chainFromWallet = await web3.eth.getChainId()
+
+	let chains = {
+		'eth': 1,
+		'bsc': 56,
+		'matic': 137
+	}
+
+	if (chainFromWallet !== chains[chain]) {
+		throw `Your wallet is not on the main ${chain} network, change your network or enter the address manually.`
+	}
+
+	let metamaskAddr = await web3.eth.requestAccounts()
+	return getAll ? metamaskAddr : metamaskAddr[0]
 };

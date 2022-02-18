@@ -6,7 +6,8 @@
         "@emurgo/cardano-serialization-lib-browser": "^9.1.2",
         "@emurgo/cardano-serialization-lib-nodejs": "^9.1.2",
         "buffer": "^6.0.3",
-        "cbor": "^8.1.0"
+        "cbor": "^8.1.0",
+        "web3": "^1.7.0"
     },
     "license": "MIT",
     "repository": {
