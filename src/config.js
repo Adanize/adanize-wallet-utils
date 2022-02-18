@@ -34,5 +34,8 @@ export const MESSAGES = {
         ccvault: 'The CCVault Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/ccvaultio/kmhcihpebfmpgmihbkipmjlmmioameka" target="_blank" class="font-bold">Install it</a>.',
         flint: 'The Flint Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/flint/hnhobjmcibchnmglfbldbfabcgaknlkj" target="_blank" class="font-bold">Install it</a>.',
         gero: 'The Gero Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/gerowallet/bgpipimickeadkjlklgciifhnalhdjhe" target="_blank" class="font-bold">Install it</a>.',
+        yoroi: 'The Yoroi Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/yoroi/ffnbelfdoeiohenkjibnmadjiehjhajb" target="_blank" class="font-bold">Install it</a>.',
+        typhon: 'The Typhon Wallet extension does not seem to be installed on your browser. <a href="https://typhonwallet.io/#/download" target="_blank" class="font-bold">Install it</a>.',
+        cardwallet: 'The CardWallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/cardwallet/apnehcjmnengpnmccpaibjmhhoadaico" target="_blank" class="font-bold">Install it</a>.',
     }
 };

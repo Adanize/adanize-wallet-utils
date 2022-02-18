@@ -232,3 +232,181 @@ export const startNami = async () => {
         }
     });
 };
+
+/**
+ * Connect in Yoroi Wallet and return instance if success
+ * @returns mixed
+ */
+ export const startYoroi = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.yoroi,
+                wallet_key: Config.WALLETS[Config.WINDOW_PARENT_WALLETS.cardano].yoroi
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.yoroi]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.yoroi].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.yoroi].enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.yoroi
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.yoroi,
+                            wallet_key: Config.WALLETS_CARDANO.yoroi
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.yoroi,
+                        wallet_key: Config.WALLETS_CARDANO.yoroi
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Connect in Typhon Wallet and return instance if success
+ * @returns mixed
+ */
+ export const startTyphon = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.typhon,
+                wallet_key: Config.WALLETS_CARDANO.typhon
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.typhon]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.typhon].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.typhon].enable().then((res) => {
+                            if (res.status) {
+                                resolve(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.typhon])
+                            } else {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.typhon
+                                })
+                            }
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.typhon
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.typhon,
+                            wallet_key: Config.WALLETS_CARDANO.typhon
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.typhon,
+                        wallet_key: Config.WALLETS_CARDANO.typhon
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Connect in CardWallet and return instance if success
+ * @returns mixed
+ */
+ export const startCardwallet = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.cardwallet,
+                wallet_key: Config.WALLETS_CARDANO.cardwallet
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet].enable().then((res) => {
+                            if (res.status) {
+                                resolve(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet])
+                            } else {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.cardwallet
+                                })
+                            }
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.cardwallet
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.cardwallet,
+                            wallet_key: Config.WALLETS_CARDANO.cardwallet
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.cardwallet,
+                        wallet_key: Config.WALLETS_CARDANO.cardwallet
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
