@@ -1,7 +1,11 @@
 import * as wasm from '@emurgo/cardano-serialization-lib-asmjs'
-import Web3Token from './browser'
+import Web3Token from './resources/browser'
 import { Buffer } from 'buffer'
 import * as Web3 from 'web3'
+
+import {
+    startNami
+} from './start'
 
 const namiKey = "nami"
 const ccvaultKey = "ccvault"
@@ -11,80 +15,85 @@ const typhonKey = "typhon"
 const yoroiKey = "yoroi"
 const cardwalletKey = "cardwallet"
 
+const solanaPhantomKey = "phantom"
+const solanaSolflareKey = "solflare"
+
+const ethereumMetamaskKey = "metamask"
+
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
 
-/**
- * Connect in Nami Wallet and return instance if success
- * @returns mixed
- */
-export const startNami = async() => {
-    let messageNotInstalled = 'The Nami Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo" target="_blank" class="font-bold">Install it</a>.'
+// /**
+//  * Connect in Nami Wallet and return instance if success
+//  * @returns mixed
+//  */
+// export const startNami = async() => {
+//     let messageNotInstalled = 'The Nami Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo" target="_blank" class="font-bold">Install it</a>.'
 
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.cardano) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: namiKey
-            })
-        }
-        try {
-            const interval = setInterval(() => {
-                try {
-                    if ((typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") || typeof(window.cardano.enable) !== "undefined") {
-                        clearInterval(interval)
+//     return await new Promise((resolve, reject) => {
+//         if (typeof(window.cardano) == "undefined") {
+//             reject({
+//                 code: -10,
+//                 message: messageNotInstalled,
+//                 wallet_key: namiKey
+//             })
+//         }
+//         try {
+//             const interval = setInterval(() => {
+//                 try {
+//                     if ((typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") || typeof(window.cardano.enable) !== "undefined") {
+//                         clearInterval(interval)
 
-                        let instance
+//                         let instance
 
-                        if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
-                            try {
-                                instance = window.cardano.nami.enable()
-                            } catch (e) {
-                                if (e.code == -2) {
-                                    reject({
-                                        code: -2,
-                                        message: messageCode2,
-                                        wallet_key: namiKey
-                                    })
-                                } else {
-                                    reject(e)
-                                }
-                            }
-                        } else {
-                            try {
-                                instance = window.cardano.enable()
-                            } catch (error) {
-                                reject(e)
-                            }
-                        }
+//                         if (typeof(window.cardano.nami) !== "undefined" && typeof(window.cardano.nami.enable) !== "undefined") {
+//                             try {
+//                                 instance = window.cardano.nami.enable()
+//                             } catch (e) {
+//                                 if (e.code == -2) {
+//                                     reject({
+//                                         code: -2,
+//                                         message: messageCode2,
+//                                         wallet_key: namiKey
+//                                     })
+//                                 } else {
+//                                     reject(e)
+//                                 }
+//                             }
+//                         } else {
+//                             try {
+//                                 instance = window.cardano.enable()
+//                             } catch (error) {
+//                                 reject(e)
+//                             }
+//                         }
 
-                        instance.then((res) => {
-                            resolve(res === true ? window.cardano : res)
-                        }).catch((e) => {
-                            reject(e)
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: namiKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: namiKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
+//                         instance.then((res) => {
+//                             resolve(res === true ? window.cardano : res)
+//                         }).catch((e) => {
+//                             reject(e)
+//                         })
+//                     } else {
+//                         clearInterval(interval)
+//                         reject({
+//                             code: -10,
+//                             message: messageNotInstalled,
+//                             wallet_key: namiKey
+//                         })
+//                     }
+//                 } catch (error) {
+//                     clearInterval(interval)
+//                     reject({
+//                         code: -10,
+//                         message: messageNotInstalled,
+//                         wallet_key: namiKey
+//                     })
+//                 }
+//             }, 500)
+//         } catch (error) {
+//             reject(e)
+//         }
+//     });
+// };
 
 /**
  * Connect in CCVault and return instance if success
@@ -442,6 +451,267 @@ export const startCardwallet = async() => {
 };
 
 /**
+ * Start Solana Phantom wallet
+ * @returns mixed
+ */
+ export const solanaStartPhantom = async() => {
+    let messageNotInstalled = 'The Phantom Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.solana) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: solanaPhantomKey
+            })
+        }
+		if (!window.solana.isPhantom) {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: solanaPhantomKey
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window.solana) !== "undefined" && typeof(window.solana.connect) !== "undefined") {
+                        clearInterval(interval)
+                        window.solana.connect().then((res) => {
+                            resolve(window.solana)
+                        }).catch((e) => {
+                            if (e.code == 4001) {
+                                reject({
+                                    code: -2,
+                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
+                                    wallet_key: solanaPhantomKey
+                                })
+                            } else {
+                                reject({
+									...e,
+									wallet_key: solanaPhantomKey
+								})
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: solanaPhantomKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: solanaPhantomKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Start Solana Solflare wallet
+ * @returns mixed
+ */
+ export const solanaStartSolflare = async() => {
+    let messageNotInstalled = 'The Solflare Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/solflare-wallet/bhhhlbepdkbapadjdnnojkbgioiodbic" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.solflare) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: solanaSolflareKey
+            })
+        }
+		if (!window.solflare.isSolflare) {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: solanaSolflareKey
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window.solflare) !== "undefined" && typeof(window.solflare.connect) !== "undefined") {
+                        clearInterval(interval)
+                        window.solflare.connect().then((res) => {
+							if (!res) {
+								reject({
+                                    code: -2,
+                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
+                                    wallet_key: solanaSolflareKey
+                                })
+							} else {
+								resolve(window.solflare)
+							}
+                        }).catch((e) => {
+                            reject({
+								...e,
+								wallet_key: solanaSolflareKey
+							})
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: solanaSolflareKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: solanaSolflareKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+
+
+/**
+ * Verify has metamask installed
+ * @returns boolean
+ */
+ export const metamaskIsInstalled = async() => {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			if (typeof(window.ethereum) !== 'undefined') {
+				resolve(true)
+			} else {
+				resolve(false)
+			}
+		}, 100)
+	})
+};
+
+/**
+ * Start Ethereum Metamask wallet
+ * @returns mixed
+ */
+ export const ethereumMetamaskStart = async() => {
+    let messageNotInstalled = 'The Metamask Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank" class="font-bold">Install it</a>.'
+
+    return await new Promise((resolve, reject) => {
+        if (typeof(window.ethereum) == "undefined") {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: ethereumMetamaskKey
+            })
+        }
+		if (!window.ethereum.isMetaMask) {
+            reject({
+                code: -10,
+                message: messageNotInstalled,
+                wallet_key: ethereumMetamaskKey
+            })
+        }
+        try {
+            const interval = setInterval(async () => {
+                try {
+                    if (typeof(window.ethereum) !== "undefined" && typeof(window.ethereum.enable) !== "undefined") {
+                        clearInterval(interval)
+
+
+						let metamaskUnlocked = await window.ethereum._metamask.isUnlocked()
+						if (!metamaskUnlocked) {
+							reject({
+								code: -2,
+								message: 'Your metamask is locked.',
+								wallet_key: ethereumMetamaskKey
+							})
+						}
+
+                        window.ethereum.enable().then((res) => {
+							if ( (typeof(res) == "string" || typeof(res) == "object") && res != '' ) {
+								resolve(window.ethereum)
+							} else {
+								reject({
+                                    code: -2,
+                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
+                                    wallet_key: ethereumMetamaskKey
+                                })
+							}
+                        }).catch((e) => {
+                            if (e.code == 4001) {
+                                reject({
+                                    code: -2,
+                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
+                                    wallet_key: ethereumMetamaskKey
+                                })
+                            } else {
+                                reject({
+									...e,
+									wallet_key: ethereumMetamaskKey
+								})
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: messageNotInstalled,
+                            wallet_key: ethereumMetamaskKey
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: messageNotInstalled,
+                        wallet_key: ethereumMetamaskKey
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Verify chain in metamask
+ * @param {Web3} web3
+ * @param {string} ethereumChain
+ * @returns string
+ */
+ export const ethereumMetamaskVerifyChain = async(web3, ethereumChain) => {
+	let chainFromWallet = await web3.eth.getChainId()
+
+	let chains = {
+		'eth': 1,
+		'bsc': 56,
+		'matic': 137
+	}
+
+	try {
+		if (chainFromWallet !== chains[ethereumChain || 'eth']) {
+			throw {
+				message: `Your wallet is not on the main ${ethereumChain} network, change your network or enter the address manually.`
+			}
+		}
+	} catch (error) {
+		throw error
+	}
+ };
+
+/**
  * Return the balance string with base on wallet
  * Compatible wallets: nami, ccvault, gero, flint, typhon
  * @param {string} wallet
@@ -670,13 +940,22 @@ export const getAddressString = async(data) => {
 };
 
 /**
- * Get only one used address
- * Compatible wallets: nami, ccvault, gero, flint, typhon
+ * Get used address from wallets
+ * Compatible wallets:
+ *   Cardano: nami, ccvault, gero, flint, typhon, cardwallet, yoroi
+ *   Ethereum/BSC/Polygon: metamask
+ *   Solana: phantom, solflare
  * @param {string} wallet
+ * @param {object} options
  * @returns mixed
  */
-export const getUsedAddressString = async(wallet = 'nami') => {
+export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
     let instance
+
+	const {
+		ethereumChain = null,
+		ethereumGetAllAddresses = false
+	} = options
 
     if (wallet == namiKey) {
         instance = await startNami()
@@ -704,6 +983,24 @@ export const getUsedAddressString = async(wallet = 'nami') => {
         } else {
             return null
         }
+
+	// Solana Wallets
+    } else if (wallet == solanaPhantomKey) {
+        instance = await solanaStartPhantom()
+		return instance.publicKey.toString()
+    } else if ( wallet == solanaSolflareKey) {
+        instance = await solanaStartSolflare()
+		return instance.publicKey.toString()
+
+	// Ethereum Wallets
+    } else if ( wallet == ethereumMetamaskKey) {
+        instance = await ethereumMetamaskStart()
+		let web3 = new Web3(instance)
+
+		await ethereumMetamaskVerifyChain(web3, ethereumChain)
+
+		let metamaskAddr = await web3.eth.requestAccounts()
+		return ethereumGetAllAddresses ? metamaskAddr : metamaskAddr[0]
     } else {
         return null
     }
@@ -893,6 +1190,12 @@ export const getNetworkString = async(wallet = "nami") => {
         instance = await startYoroi()
     } else if (wallet == cardwalletKey) {
         instance = await startCardwallet()
+    } else if (wallet == solanaPhantomKey) {
+        return 'mainnet'
+    } else if (wallet == solanaSolflareKey) {
+        return 'mainnet'
+    }  else if (wallet == ethereumMetamaskKey) {
+        return 'mainnet'
     } else {
         return null
     }
@@ -947,24 +1250,6 @@ export const extend = async(wallet = "nami") => {
 
     return instance
 };
-
-
-/**
- * Verify has metamask installed
- * @returns boolean
- */
-export const metamaskIsInstalled = async() => {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			if (typeof(window.ethereum) !== 'undefined') {
-				resolve(true)
-			} else {
-				resolve(false)
-			}
-		}, 100)
-	})
-};
-
 
 /**
  * Get metamask address
