@@ -3,6 +3,8 @@ import Web3Token from './resources/browser'
 import { Buffer } from 'buffer'
 import * as Web3 from 'web3'
 
+import * as Config from './config'
+
 import {
     startNami,
     startCCVault,
@@ -23,21 +25,6 @@ import {
     ethereumMetamaskVerifyChain
 } from './startEthereum'
 
-const namiKey = "nami"
-const ccvaultKey = "ccvault"
-const geroKey = "gero"
-const flintKey = "flint"
-const typhonKey = "typhon"
-const yoroiKey = "yoroi"
-const cardwalletKey = "cardwallet"
-
-const solanaPhantomKey = "phantom"
-const solanaSolflareKey = "solflare"
-
-const ethereumMetamaskKey = "metamask"
-
-const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
-
 /**
  * Return the balance string with base on wallet
  * Compatible wallets: nami, ccvault, gero, flint, typhon
@@ -46,17 +33,17 @@ const messageCode2 = 'An error occurred during execution of this API call. One o
  */
 export const getBalanceString = async(wallet = "nami") => {
     let instance, balance
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
@@ -75,17 +62,17 @@ export const getBalanceString = async(wallet = "nami") => {
 export const getNfts = async(wallet = "nami") => {
     let instance, balance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
@@ -131,17 +118,17 @@ export const getNfts = async(wallet = "nami") => {
 export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
     let instance, balance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
@@ -176,19 +163,19 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
 export const getTotalInWallet = async(wallet = "nami") => {
     let instance, balance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         instance = await startTyphon()
     } else {
         return null
@@ -196,7 +183,7 @@ export const getTotalInWallet = async(wallet = "nami") => {
 
     balance = await instance.getBalance()
 
-    if (wallet == typhonKey) {
+    if (wallet == Config.WALLETS_CARDANO.typhon) {
         return {
             locked: {
                 decimal: 0,
@@ -284,19 +271,19 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
 		ethereumGetAllAddresses = false
 	} = options
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // In Typhon the address is not returned as in CIP-0030, so it must be called differently
         instance = await startTyphon()
         let typhonAddr = await instance.getAddress()
@@ -312,15 +299,15 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
         }
 
 	// Solana Wallets
-    } else if (wallet == solanaPhantomKey) {
+    } else if (wallet == Config.WALLETS_SOLANA.phantom) {
         instance = await solanaStartPhantom()
 		return instance.publicKey.toString()
-    } else if ( wallet == solanaSolflareKey) {
+    } else if ( wallet == Config.WALLETS_SOLANA.solflare) {
         instance = await solanaStartSolflare()
 		return instance.publicKey.toString()
 
 	// Ethereum Wallets
-    } else if ( wallet == ethereumMetamaskKey) {
+    } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
         instance = await ethereumMetamaskStart()
 		let web3 = new Web3(instance)
 
@@ -355,19 +342,19 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
 export const getChangeAddressString = async(wallet = 'nami') => {
     let instance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // Typhon does not have the method getChangeAddress used in CIP-0030, so it returns the normal address
         instance = await getUsedAddressString('typhon')
         return instance
@@ -389,19 +376,19 @@ export const getChangeAddressString = async(wallet = 'nami') => {
 export const getUnusedAddressString = async(wallet = 'nami') => {
     let instance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // Typhon does not have the method getUnusedAddresses used in CIP-0030
         return null
     } else {
@@ -427,17 +414,17 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
 export const getRewardAddressString = async(wallet = 'nami') => {
     let instance, addrHex
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
@@ -468,17 +455,17 @@ export const getRewardAddressString = async(wallet = 'nami') => {
 export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet", body = {}, days = "7300") => {
     let instance, addrHex
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
@@ -512,25 +499,25 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
 export const getNetworkString = async(wallet = "nami") => {
     let instance, nw
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         instance = await startTyphon()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
-    } else if (wallet == solanaPhantomKey) {
+    } else if (wallet == Config.WALLETS_SOLANA.phantom) {
         return 'mainnet'
-    } else if (wallet == solanaSolflareKey) {
+    } else if (wallet == Config.WALLETS_SOLANA.solflare) {
         return 'mainnet'
-    }  else if (wallet == ethereumMetamaskKey) {
+    }  else if (wallet == Config.WALLETS_ETHEREUM.metamask) {
         return 'mainnet'
     } else {
         return null
@@ -539,7 +526,7 @@ export const getNetworkString = async(wallet = "nami") => {
     try {
 
 		// In Yoroi, yet return only mainnet
-		if (wallet == yoroiKey) {
+		if (wallet == Config.WALLETS_CARDANO.yoroi) {
 			nw = 1
 		} else {
 			nw = await instance.getNetworkId()
@@ -566,19 +553,19 @@ export const getNetworkString = async(wallet = "nami") => {
 export const extend = async(wallet = "nami") => {
     let instance
 
-    if (wallet == namiKey) {
+    if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await startNami()
-    } else if (wallet == ccvaultKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
         instance = await startCCVault()
-    } else if (wallet == geroKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.gero) {
         instance = await startGero()
-    } else if (wallet == flintKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.flint) {
         instance = await startFlint()
-    } else if (wallet == yoroiKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
         instance = await startYoroi()
-    } else if (wallet == typhonKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         instance = await startTyphon()
-    } else if (wallet == cardwalletKey) {
+    } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await startCardwallet()
     } else {
         return null
