@@ -649,6 +649,26 @@ export const getAddressString = async(data) => {
 };
 
 /**
+ * Return hex address from bech32 format
+ * Compatible wallets: all
+ * @param {*} data
+ * @returns string
+ */
+ export const getAddressFromBech32ToHex = async(data) => {
+	try {
+		let addrHex = Buffer.from(
+			wasm.Address.from_bech32(
+				data
+			).to_bytes(), 'hex'
+		).toString('hex')
+
+		return addrHex
+	} catch (error) {
+		return null
+	}
+};
+
+/**
  * Get only one used address
  * Compatible wallets: nami, ccvault, gero, flint, typhon
  * @param {string} wallet
@@ -877,7 +897,13 @@ export const getNetworkString = async(wallet = "nami") => {
     }
 
     try {
-        nw = await instance.getNetworkId()
+
+		// In Yoroi, yet return only mainnet
+		if (wallet == yoroiKey) {
+			nw = 1
+		} else {
+			nw = await instance.getNetworkId()
+		}
 
         // In Typhon the network is returned as an object inside the "data" key
         if (typeof(nw) === "object" && typeof(nw.data) !== "undefined") {
