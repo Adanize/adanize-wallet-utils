@@ -4,7 +4,7 @@ import * as Config from './config'
  * Connect in Nami Wallet and return instance if success
  * @returns mixed
  */
-const startNami = async () => {
+export const startNami = async () => {
     return await new Promise((resolve, reject) => {
         if (typeof (window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
             reject({
@@ -70,5 +70,3 @@ const startNami = async () => {
         }
     });
 };
-
-export default { startNami }
