@@ -4,7 +4,9 @@ import { Buffer } from 'buffer'
 import * as Web3 from 'web3'
 
 import {
-    startNami
+    startNami,
+    startCCVault,
+    startFlint
 } from './start'
 
 const namiKey = "nami"
@@ -21,63 +23,6 @@ const solanaSolflareKey = "solflare"
 const ethereumMetamaskKey = "metamask"
 
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
-
-
-/**
- * Connect in Flint and return instance if success
- * @returns mixed
- */
-export const startFlint = async() => {
-    let messageNotInstalled = 'The Flint Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/flint/hnhobjmcibchnmglfbldbfabcgaknlkj" target="_blank" class="font-bold">Install it</a>.'
-
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.cardano) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: flintKey
-            })
-        }
-        try {
-            const interval = setInterval(() => {
-                try {
-                    if (typeof(window.cardano.flint) !== "undefined" && typeof(window.cardano.flint.enable) !== "undefined") {
-                        clearInterval(interval)
-                        window.cardano.flint.enable().then((res) => {
-                            resolve(res)
-                        }).catch((e) => {
-                            if (e.code == -2) {
-                                reject({
-                                    code: -2,
-                                    message: messageCode2,
-                                    wallet_key: flintKey
-                                })
-                            } else {
-                                reject(e)
-                            }
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: flintKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: flintKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
 
 /**
  * Connect in Gero Wallet and return instance if success

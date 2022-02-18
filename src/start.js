@@ -124,3 +124,57 @@ export const startNami = async () => {
         }
     });
 };
+
+/**
+ * Connect in Flint and return instance if success
+ * @returns mixed
+ */
+ export const startFlint = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.flint,
+                wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.flint]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.flint].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.flint].enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2,
+                                    wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.flint,
+                            wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.flint,
+                        wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
