@@ -28,7 +28,7 @@ export const startNami = async () => {
                                 if (e.code == -2) {
                                     reject({
                                         code: -2,
-                                        message: Config.MESSAGES.code2,
+                                        message: Config.MESSAGES.code2.default,
                                         wallet_key: Config.WALLETS_CARDANO.nami
                                     })
                                 } else {
@@ -62,6 +62,60 @@ export const startNami = async () => {
                         code: -10,
                         message: Config.MESSAGES.notInstalled.nami,
                         wallet_key: Config.WALLETS_CARDANO.nami
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Connect in CCVault and return instance if success
+ * @returns mixed
+ */
+ export const startCCVault = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.ccvault,
+                wallet_key: Config.WALLETS_CARDANO.ccvault
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.ccvault]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.ccvault].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.ccvault].enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.ccvault,
+                                    wallet_key: Config.WALLETS_CARDANO.ccvault
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.ccvault,
+                            wallet_key: Config.WALLETS_CARDANO.ccvault
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.ccvault,
+                        wallet_key: Config.WALLETS_CARDANO.ccvault
                     })
                 }
             }, 500)
