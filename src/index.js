@@ -6,7 +6,8 @@ import * as Web3 from 'web3'
 import {
     startNami,
     startCCVault,
-    startFlint
+    startFlint,
+    startGero,
 } from './start'
 
 const namiKey = "nami"
@@ -23,62 +24,6 @@ const solanaSolflareKey = "solflare"
 const ethereumMetamaskKey = "metamask"
 
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
-
-/**
- * Connect in Gero Wallet and return instance if success
- * @returns mixed
- */
-export const startGero = async() => {
-    let messageNotInstalled = 'The Gero Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/gerowallet/bgpipimickeadkjlklgciifhnalhdjhe" target="_blank" class="font-bold">Install it</a>.'
-
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.cardano) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: geroKey
-            })
-        }
-        try {
-            const interval = setInterval(() => {
-                try {
-                    if (typeof(window.cardano.gerowallet) !== "undefined" && typeof(window.cardano.gerowallet.enable) !== "undefined") {
-                        clearInterval(interval)
-                        window.cardano.gerowallet.enable().then((res) => {
-                            resolve(res)
-                        }).catch((e) => {
-                            if (e.code == -2) {
-                                reject({
-                                    code: -2,
-                                    message: messageCode2,
-                                    wallet_key: geroKey
-                                })
-                            } else {
-                                reject(e)
-                            }
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: geroKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: geroKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
 
 /**
  * Connect in Yoroi Wallet and return instance if success
@@ -822,6 +767,15 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
     }
 
     let addrHex = await instance.getUsedAddresses()
+
+    if (typeof(addrHex) === "object" && addrHex.length <= 0) {
+        addrHex = await instance.getChangeAddress()
+    }
+
+    if (!addrHex) {
+        addrHex = await instance.getChangeAddress()
+    }
+
     let addr = await getAddressString(addrHex)
     return addr
 };

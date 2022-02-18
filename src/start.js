@@ -149,7 +149,7 @@ export const startNami = async () => {
                             if (e.code == -2) {
                                 reject({
                                     code: -2,
-                                    message: Config.MESSAGES.code2,
+                                    message: Config.MESSAGES.code2.default,
                                     wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
                                 })
                             } else {
@@ -170,6 +170,60 @@ export const startNami = async () => {
                         code: -10,
                         message: Config.MESSAGES.notInstalled.flint,
                         wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
+
+/**
+ * Connect in Gero Wallet and return instance if success
+ * @returns mixed
+ */
+ export const startGero = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.gero,
+                wallet_key: Config.WALLETS_CARDANO.gero
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.gero]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.gero].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.gero].enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.gero
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.gero,
+                            wallet_key: Config.WALLETS_CARDANO.gero
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.gero,
+                        wallet_key: Config.WALLETS_CARDANO.gero
                     })
                 }
             }, 500)
