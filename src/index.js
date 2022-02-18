@@ -18,6 +18,11 @@ import {
     solanaStartSolflare
 } from './startSolana'
 
+import {
+    ethereumMetamaskStart,
+    ethereumMetamaskVerifyChain
+} from './startEthereum'
+
 const namiKey = "nami"
 const ccvaultKey = "ccvault"
 const geroKey = "gero"
@@ -32,133 +37,6 @@ const solanaSolflareKey = "solflare"
 const ethereumMetamaskKey = "metamask"
 
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
-
-/**
- * Verify has metamask installed
- * @returns boolean
- */
- export const metamaskIsInstalled = async() => {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			if (typeof(window.ethereum) !== 'undefined') {
-				resolve(true)
-			} else {
-				resolve(false)
-			}
-		}, 100)
-	})
-};
-
-/**
- * Start Ethereum Metamask wallet
- * @returns mixed
- */
- export const ethereumMetamaskStart = async() => {
-    let messageNotInstalled = 'The Metamask Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank" class="font-bold">Install it</a>.'
-
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.ethereum) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: ethereumMetamaskKey
-            })
-        }
-		if (!window.ethereum.isMetaMask) {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: ethereumMetamaskKey
-            })
-        }
-        try {
-            const interval = setInterval(async () => {
-                try {
-                    if (typeof(window.ethereum) !== "undefined" && typeof(window.ethereum.enable) !== "undefined") {
-                        clearInterval(interval)
-
-
-						let metamaskUnlocked = await window.ethereum._metamask.isUnlocked()
-						if (!metamaskUnlocked) {
-							reject({
-								code: -2,
-								message: 'Your metamask is locked.',
-								wallet_key: ethereumMetamaskKey
-							})
-						}
-
-                        window.ethereum.enable().then((res) => {
-							if ( (typeof(res) == "string" || typeof(res) == "object") && res != '' ) {
-								resolve(window.ethereum)
-							} else {
-								reject({
-                                    code: -2,
-                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
-                                    wallet_key: ethereumMetamaskKey
-                                })
-							}
-                        }).catch((e) => {
-                            if (e.code == 4001) {
-                                reject({
-                                    code: -2,
-                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
-                                    wallet_key: ethereumMetamaskKey
-                                })
-                            } else {
-                                reject({
-									...e,
-									wallet_key: ethereumMetamaskKey
-								})
-                            }
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: ethereumMetamaskKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: ethereumMetamaskKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
-
-/**
- * Verify chain in metamask
- * @param {Web3} web3
- * @param {string} ethereumChain
- * @returns string
- */
- export const ethereumMetamaskVerifyChain = async(web3, ethereumChain) => {
-	let chainFromWallet = await web3.eth.getChainId()
-
-	let chains = {
-		'eth': 1,
-		'bsc': 56,
-		'matic': 137
-	}
-
-	try {
-		if (chainFromWallet !== chains[ethereumChain || 'eth']) {
-			throw {
-				message: `Your wallet is not on the main ${ethereumChain} network, change your network or enter the address manually.`
-			}
-		}
-	} catch (error) {
-		throw error
-	}
- };
 
 /**
  * Return the balance string with base on wallet
@@ -707,38 +585,4 @@ export const extend = async(wallet = "nami") => {
     }
 
     return instance
-};
-
-/**
- * Get metamask address
- * @param {string} chain
- * @returns string
- */
-export const metamaskGetAddress = async(chain = "eth", getAll = false) => {
-	let hasMetamask = await metamaskIsInstalled()
-	if (!hasMetamask) {
-		throw 'Metamask not installed.'
-	}
-
-	let web3 = new Web3(window.ethereum)
-
-    let metamaskUnlocked = await window.ethereum._metamask.isUnlocked()
-	if (!metamaskUnlocked) {
-		throw 'Your metamask is locked.'
-	}
-
-	let chainFromWallet = await web3.eth.getChainId()
-
-	let chains = {
-		'eth': 1,
-		'bsc': 56,
-		'matic': 137
-	}
-
-	if (chainFromWallet !== chains[chain]) {
-		throw `Your wallet is not on the main ${chain} network, change your network or enter the address manually.`
-	}
-
-	let metamaskAddr = await web3.eth.requestAccounts()
-	return getAll ? metamaskAddr : metamaskAddr[0]
 };

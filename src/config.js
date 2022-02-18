@@ -29,6 +29,7 @@ export const MESSAGES = {
         default: 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!',
         ccvault: 'An error occurred during execution of this API call. At CCVault you may not have a selected account in your wallet or you may not have activated the DApp Account mode. If so, you can activate it by opening your wallet, clicking on the "Account" tab and then on "Enable DApp Account". After verifying what happened, refresh this page and try again!',
         solana: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
+        ethereum: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
     },
     notInstalled: {
         nami: 'The Nami Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo" target="_blank" class="font-bold">Install it</a>.',
@@ -40,5 +41,6 @@ export const MESSAGES = {
         cardwallet: 'The CardWallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/cardwallet/apnehcjmnengpnmccpaibjmhhoadaico" target="_blank" class="font-bold">Install it</a>.',
         phantom: 'The Phantom Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" class="font-bold">Install it</a>.',
         solflare: 'The Solflare Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/solflare-wallet/bhhhlbepdkbapadjdnnojkbgioiodbic" target="_blank" class="font-bold">Install it</a>.',
+        metamask: 'The Metamask Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank" class="font-bold">Install it</a>.',
     }
 };
