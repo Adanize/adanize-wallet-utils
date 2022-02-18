@@ -243,7 +243,7 @@ export const startNami = async () => {
             reject({
                 code: -10,
                 message: Config.MESSAGES.notInstalled.yoroi,
-                wallet_key: Config.WALLETS[Config.WINDOW_PARENT_WALLETS.cardano].yoroi
+                wallet_key: Config.WALLETS_CARDANO.yoroi
             })
         }
         try {

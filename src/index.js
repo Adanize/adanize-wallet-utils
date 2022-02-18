@@ -13,6 +13,11 @@ import {
     startCardwallet
 } from './startCardano'
 
+import {
+    solanaStartPhantom,
+    solanaStartSolflare
+} from './startSolana'
+
 const namiKey = "nami"
 const ccvaultKey = "ccvault"
 const geroKey = "gero"
@@ -27,140 +32,6 @@ const solanaSolflareKey = "solflare"
 const ethereumMetamaskKey = "metamask"
 
 const messageCode2 = 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet. After verifying what happened, refresh this page and try again!'
-
-/**
- * Start Solana Phantom wallet
- * @returns mixed
- */
- export const solanaStartPhantom = async() => {
-    let messageNotInstalled = 'The Phantom Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa" target="_blank" class="font-bold">Install it</a>.'
-
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.solana) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: solanaPhantomKey
-            })
-        }
-		if (!window.solana.isPhantom) {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: solanaPhantomKey
-            })
-        }
-        try {
-            const interval = setInterval(() => {
-                try {
-                    if (typeof(window.solana) !== "undefined" && typeof(window.solana.connect) !== "undefined") {
-                        clearInterval(interval)
-                        window.solana.connect().then((res) => {
-                            resolve(window.solana)
-                        }).catch((e) => {
-                            if (e.code == 4001) {
-                                reject({
-                                    code: -2,
-                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
-                                    wallet_key: solanaPhantomKey
-                                })
-                            } else {
-                                reject({
-									...e,
-									wallet_key: solanaPhantomKey
-								})
-                            }
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: solanaPhantomKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: solanaPhantomKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
-
-/**
- * Start Solana Solflare wallet
- * @returns mixed
- */
- export const solanaStartSolflare = async() => {
-    let messageNotInstalled = 'The Solflare Wallet extension does not seem to be installed on your browser. <a href="https://chrome.google.com/webstore/detail/solflare-wallet/bhhhlbepdkbapadjdnnojkbgioiodbic" target="_blank" class="font-bold">Install it</a>.'
-
-    return await new Promise((resolve, reject) => {
-        if (typeof(window.solflare) == "undefined") {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: solanaSolflareKey
-            })
-        }
-		if (!window.solflare.isSolflare) {
-            reject({
-                code: -10,
-                message: messageNotInstalled,
-                wallet_key: solanaSolflareKey
-            })
-        }
-        try {
-            const interval = setInterval(() => {
-                try {
-                    if (typeof(window.solflare) !== "undefined" && typeof(window.solflare.connect) !== "undefined") {
-                        clearInterval(interval)
-                        window.solflare.connect().then((res) => {
-							if (!res) {
-								reject({
-                                    code: -2,
-                                    message: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
-                                    wallet_key: solanaSolflareKey
-                                })
-							} else {
-								resolve(window.solflare)
-							}
-                        }).catch((e) => {
-                            reject({
-								...e,
-								wallet_key: solanaSolflareKey
-							})
-                        })
-                    } else {
-                        clearInterval(interval)
-                        reject({
-                            code: -10,
-                            message: messageNotInstalled,
-                            wallet_key: solanaSolflareKey
-                        })
-                    }
-                } catch (error) {
-                    clearInterval(interval)
-                    reject({
-                        code: -10,
-                        message: messageNotInstalled,
-                        wallet_key: solanaSolflareKey
-                    })
-                }
-            }, 500)
-        } catch (error) {
-            reject(e)
-        }
-    });
-};
-
-
 
 /**
  * Verify has metamask installed
