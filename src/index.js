@@ -49,8 +49,12 @@ export const getBalanceString = async(wallet = "nami") => {
         return null
     }
 
-    balance = await instance.getBalance()
-    return balance
+    try {
+        balance = await instance.getBalance()
+        return balance
+    } catch (error) {
+        throw error
+    }
 };
 
 /**
@@ -328,9 +332,13 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
     if (!addrHex) {
         addrHex = await instance.getChangeAddress()
     }
-
-    let addr = await getAddressString(addrHex)
-    return addr
+    
+    try {
+        let addr = await getAddressString(addrHex)
+        return addr
+    } catch (error) {
+        throw error
+    }
 };
 
 /**
