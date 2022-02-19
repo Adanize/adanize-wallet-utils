@@ -25,6 +25,10 @@ import {
     ethereumMetamaskVerifyChain
 } from './startEthereum'
 
+import {
+    connectWalletWithTimeout
+} from './util'
+
 /**
  * Return the balance string with base on wallet
  * Compatible wallets: nami, ccvault, gero, flint, typhon
@@ -34,17 +38,17 @@ import {
 export const getBalanceString = async(wallet = "nami") => {
     let instance, balance
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
@@ -63,17 +67,17 @@ export const getNfts = async(wallet = "nami") => {
     let instance, balance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
@@ -119,17 +123,17 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
     let instance, balance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
@@ -164,19 +168,19 @@ export const getTotalInWallet = async(wallet = "nami") => {
     let instance, balance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
-        instance = await startTyphon()
+        instance = await connectWalletWithTimeout(startTyphon)
     } else {
         return null
     }
@@ -276,20 +280,20 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
 	} = options
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // In Typhon the address is not returned as in CIP-0030, so it must be called differently
-        instance = await startTyphon()
+        instance = await connectWalletWithTimeout(startTyphon)
         let typhonAddr = await instance.getAddress()
 
         if (typeof(typhonAddr) === "object" && typeof(typhonAddr.data) !== "undefined") {
@@ -304,15 +308,15 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
 
 	// Solana Wallets
     } else if (wallet == Config.WALLETS_SOLANA.phantom) {
-        instance = await solanaStartPhantom()
+        instance = await connectWalletWithTimeout(solanaStartPhantom)
 		return instance.publicKey.toString()
     } else if ( wallet == Config.WALLETS_SOLANA.solflare) {
-        instance = await solanaStartSolflare()
+        instance = await connectWalletWithTimeout(solanaStartSolflare)
 		return instance.publicKey.toString()
 
 	// Ethereum Wallets
     } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
-        instance = await ethereumMetamaskStart()
+        instance = await connectWalletWithTimeout(ethereumMetamaskStart)
 		let web3 = new Web3(instance)
 
 		await ethereumMetamaskVerifyChain(web3, ethereumChain)
@@ -347,17 +351,17 @@ export const getChangeAddressString = async(wallet = 'nami') => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // Typhon does not have the method getChangeAddress used in CIP-0030, so it returns the normal address
         instance = await getUsedAddressString('typhon')
@@ -381,17 +385,17 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         // Typhon does not have the method getUnusedAddresses used in CIP-0030
         return null
@@ -419,17 +423,17 @@ export const getRewardAddressString = async(wallet = 'nami') => {
     let instance, addrHex
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
@@ -460,17 +464,17 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
     let instance, addrHex
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
@@ -504,19 +508,19 @@ export const getNetworkString = async(wallet = "nami") => {
     let instance, nw
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
-        instance = await startTyphon()
+        instance = await connectWalletWithTimeout(startTyphon)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else if (wallet == Config.WALLETS_SOLANA.phantom) {
         return 'mainnet'
     } else if (wallet == Config.WALLETS_SOLANA.solflare) {
@@ -558,19 +562,19 @@ export const extend = async(wallet = "nami") => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
-        instance = await startNami()
+        instance = await connectWalletWithTimeout(startNami)
     } else if (wallet == Config.WALLETS_CARDANO.ccvault) {
-        instance = await startCCVault()
+        instance = await connectWalletWithTimeout(startCCVault)
     } else if (wallet == Config.WALLETS_CARDANO.gero) {
-        instance = await startGero()
+        instance = await connectWalletWithTimeout(startGero)
     } else if (wallet == Config.WALLETS_CARDANO.flint) {
-        instance = await startFlint()
+        instance = await connectWalletWithTimeout(startFlint)
     } else if (wallet == Config.WALLETS_CARDANO.yoroi) {
-        instance = await startYoroi()
+        instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.typhon) {
-        instance = await startTyphon()
+        instance = await connectWalletWithTimeout(startTyphon)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
-        instance = await startCardwallet()
+        instance = await connectWalletWithTimeout(startCardwallet)
     } else {
         return null
     }
