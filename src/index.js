@@ -49,12 +49,8 @@ export const getBalanceString = async(wallet = "nami") => {
         return null
     }
 
-    try {
-        balance = await instance.getBalance()
-        return balance
-    } catch (error) {
-        throw error
-    }
+    balance = await instance.getBalance()
+    return balance
 };
 
 /**
@@ -232,9 +228,13 @@ export const getTotalInWallet = async(wallet = "nami") => {
  * @returns string
  */
 export const getAddressString = async(data) => {
-    let addrString = typeof(data) == "object" ? data[0] : data
-    const addr = wasm.Address.from_bytes(Buffer.from(addrString, "hex"))
-    return addr.to_bech32()
+    try {
+        let addrString = typeof(data) == "object" ? data[0] : data
+        const addr = wasm.Address.from_bytes(Buffer.from(addrString, "hex"))
+        return addr.to_bech32()
+    } catch (error) {
+        throw error
+    }
 };
 
 /**
@@ -332,13 +332,9 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
     if (!addrHex) {
         addrHex = await instance.getChangeAddress()
     }
-    
-    try {
-        let addr = await getAddressString(addrHex)
-        return addr
-    } catch (error) {
-        throw error
-    }
+
+    let addr = await getAddressString(addrHex)
+    return addr
 };
 
 /**
