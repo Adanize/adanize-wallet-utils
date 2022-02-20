@@ -434,6 +434,8 @@ export const getRewardAddressString = async(wallet = 'nami') => {
         instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await connectWalletWithTimeout(startCardwallet)
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
+        instance = await connectWalletWithTimeout(startTyphon)
     } else {
         return null
     }
@@ -446,6 +448,13 @@ export const getRewardAddressString = async(wallet = 'nami') => {
         } catch (error) {
             return null
         }
+    }
+    
+    // Typhon return address formatted
+    if (typeof(addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
+        try {
+            return addrHex.data
+        } catch (error) {}
     }
 
     let addr = await getAddressString(addrHex)
@@ -475,6 +484,8 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await connectWalletWithTimeout(startCardwallet)
+    }  else if (wallet == Config.WALLETS_CARDANO.typhon) {
+        instance = await connectWalletWithTimeout(startTyphon)
     } else {
         return null
     }
@@ -489,12 +500,31 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         }
     }
 
+    let dataMessageToSign = Buffer.from(message, 'ascii').toString('hex')
+
+    // For Typhon Wallet
+    if (typeof(addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
+        try {
+            let addrBech32 = await getRewardAddressString(Config.WALLETS_CARDANO.typhon)
+
+            // https://docs.typhonwallet.io/api/methods.html#signdata
+            // Structure of signData: https://docs.typhonwallet.io/api/types.html#signdata
+            let signed = await instance.signData({
+                address: addrBech32,
+                data: dataMessageToSign
+            })
+
+            return await Web3Token.sign(msg => signed.data, days + 'd', body);
+        } catch (error) {
+            throw error
+        }
+    }
+
     if (typeof(addrHex) == "object") {
         addrHex = addrHex[0]
     }
 
-    const token = await Web3Token.sign(msg => instance.signData(addrHex, Buffer.from(message, 'ascii').toString('hex')), days + 'd', body);
-
+    const token = await Web3Token.sign(msg => instance.signData(addrHex, dataMessageToSign), days + 'd', body);
     return token
 };
 
