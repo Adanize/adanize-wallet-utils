@@ -1,2 +1,2 @@
 # adanize-wallet-utils
-Wallet utilities used on Adanize
+Package under development

@@ -1,16 +1,16 @@
 {
     "name": "adanize-wallet-utils",
     "version": "1.0.0",
+    "description": "Utilities for working with Cardano, Ethereum (Metamask) and Solana (phantom, solflare) network wallets",
+    "main": "src/index.js",
+    "license": "MIT",
     "dependencies": {
         "@emurgo/cardano-serialization-lib-asmjs": "^9.1.2",
-        "@emurgo/cardano-serialization-lib-browser": "^9.1.2",
-        "@emurgo/cardano-serialization-lib-nodejs": "^9.1.2",
+        "await-timeout": "^1.1.1",
         "buffer": "^6.0.3",
         "cbor": "^8.1.0",
         "web3": "^1.7.0"
     },
-    "main": "src/index.js",
-    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Adanize/adanize-wallet-utils"
