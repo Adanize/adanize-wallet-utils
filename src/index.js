@@ -586,6 +586,11 @@ export const getNetworkString = async(wallet = "nami") => {
     return network[nw]
 };
 
+export const getNetworkId = async(wallet = "nami") => {
+    let network = await getNetworkString(wallet)
+    return network == 'testnet' ? 0 : 1
+}
+
 /**
  * Extend wallet methods
  * Compatible wallets: nami, ccvault, gero, flint, typhon
