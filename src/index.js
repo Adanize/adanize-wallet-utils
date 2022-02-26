@@ -22,7 +22,8 @@ import {
 
 import {
     ethereumMetamaskStart,
-    ethereumMetamaskVerifyChain
+    ethereumMetamaskVerifyChain,
+    ethereumMetamaskVerifyIsLocked
 } from './startEthereum'
 
 import {
@@ -148,7 +149,11 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
     try {
         nfts = await getNfts(wallet)
     } catch (error) {
-        nfts = []
+        throw error
+    }
+
+    if (!nfts) {
+        return nfts
     }
 
     nfts = nfts.filter((item) => {
@@ -320,12 +325,12 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
 
 	// Ethereum Wallets
     } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
+        await ethereumMetamaskVerifyIsLocked()
+
         instance = await connectWalletWithTimeout(ethereumMetamaskStart)
-		let web3 = new Web3(instance)
+		await ethereumMetamaskVerifyChain(instance, ethereumChain)
 
-		await ethereumMetamaskVerifyChain(web3, ethereumChain)
-
-		let metamaskAddr = await web3.eth.requestAccounts()
+		let metamaskAddr = await instance.eth.requestAccounts()
 		return ethereumGetAllAddresses ? metamaskAddr : metamaskAddr[0]
     } else {
         return null
@@ -445,10 +450,10 @@ export const getRewardAddressString = async(wallet = 'nami') => {
     }
 
     try {
-        addrHex = await instance.getRewardAddress()
+        addrHex = await instance.getRewardAddresses()
     } catch (error) {
         try {
-            addrHex = await instance.getRewardAddresses()
+            addrHex = await instance.getRewardAddress()
         } catch (error) {
             return null
         }
@@ -586,6 +591,11 @@ export const getNetworkString = async(wallet = "nami") => {
     return network[nw]
 };
 
+/**
+ * Returns the id of which network the wallet is using
+ * @param {*} wallet
+ * @returns string
+ */
 export const getNetworkId = async(wallet = "nami") => {
     let network = await getNetworkString(wallet)
     return network == 'testnet' ? 0 : 1
@@ -623,6 +633,7 @@ export const extend = async(wallet = "nami") => {
 
 	// Ethereum Wallets
     } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
+        await ethereumMetamaskVerifyIsLocked()
         instance = await connectWalletWithTimeout(ethereumMetamaskStart)
     } else {
         return null
