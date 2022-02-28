@@ -1,7 +1,8 @@
 import * as wasm from '@emurgo/cardano-serialization-lib-asmjs'
 import Web3Token from './resources/browser'
-import { Buffer } from 'buffer'
-import * as Web3 from 'web3'
+import {
+    Buffer
+} from 'buffer'
 
 import * as Config from './config'
 
@@ -36,7 +37,7 @@ import {
  * @param {string} wallet
  * @returns string
  */
-export const getBalanceString = async(wallet = "nami") => {
+export const getBalanceString = async (wallet = "nami") => {
     let instance, balance
     if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await connectWalletWithTimeout(startNami)
@@ -64,7 +65,7 @@ export const getBalanceString = async(wallet = "nami") => {
  * @param {*} wallet
  * @returns object
  */
-export const getNfts = async(wallet = "nami") => {
+export const getNfts = async (wallet = "nami") => {
     let instance, balance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -144,7 +145,7 @@ export const getNfts = async(wallet = "nami") => {
  * @param {string} type name of column to be searched: token, asset_hex, asset_name, policy_id
  * @returns object
  */
-export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
+export const searchNft = async (wallet = "nami", query, type = "policy_id") => {
     let nfts = []
     try {
         nfts = await getNfts(wallet)
@@ -173,7 +174,7 @@ export const searchNft = async(wallet = "nami", query, type = "policy_id") => {
  * @param {*} wallet
  * @returns object
  */
-export const getTotalInWallet = async(wallet = "nami") => {
+export const getTotalInWallet = async (wallet = "nami") => {
     let instance, balance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -240,9 +241,9 @@ export const getTotalInWallet = async(wallet = "nami") => {
  * @param {*} data result from: wallet.getUsedAddresses, wallet.getUnusedAddresses, wallet.getChangeAddress, wallet.getRewardAddresses
  * @returns string
  */
-export const getAddressString = async(data) => {
+export const getAddressString = async (data) => {
     try {
-        let addrString = typeof(data) == "object" ? data[0] : data
+        let addrString = typeof (data) == "object" ? data[0] : data
         const addr = wasm.Address.from_bytes(Buffer.from(addrString, "hex"))
         return addr.to_bech32()
     } catch (error) {
@@ -256,18 +257,18 @@ export const getAddressString = async(data) => {
  * @param {*} data
  * @returns string
  */
- export const getAddressFromBech32ToHex = async(data) => {
-	try {
-		let addrHex = Buffer.from(
-			wasm.Address.from_bech32(
-				data
-			).to_bytes(), 'hex'
-		).toString('hex')
+export const getAddressFromBech32ToHex = async (data) => {
+    try {
+        let addrHex = Buffer.from(
+            wasm.Address.from_bech32(
+                data
+            ).to_bytes(), 'hex'
+        ).toString('hex')
 
-		return addrHex
-	} catch (error) {
-		return null
-	}
+        return addrHex
+    } catch (error) {
+        return null
+    }
 };
 
 /**
@@ -280,13 +281,13 @@ export const getAddressString = async(data) => {
  * @param {object} options
  * @returns mixed
  */
-export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
+export const getUsedAddressString = async (wallet = 'nami', options = {}) => {
     let instance
 
-	const {
-		ethereumChain = null,
-		ethereumGetAllAddresses = false
-	} = options
+    const {
+        ethereumChain = null,
+            ethereumGetAllAddresses = false
+    } = options
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
         instance = await connectWalletWithTimeout(startNami)
@@ -305,8 +306,8 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
         instance = await connectWalletWithTimeout(startTyphon)
         let typhonAddr = await instance.getAddress()
 
-        if (typeof(typhonAddr) === "object" && typeof(typhonAddr.data) !== "undefined") {
-            if (typeof(typhonAddr.data) === "object") {
+        if (typeof (typhonAddr) === "object" && typeof (typhonAddr.data) !== "undefined") {
+            if (typeof (typhonAddr.data) === "object") {
                 return typhonAddr.data[0]
             } else {
                 return typhonAddr.data || typhonAddr['data']
@@ -315,30 +316,30 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
             return null
         }
 
-	// Solana Wallets
+        // Solana Wallets
     } else if (wallet == Config.WALLETS_SOLANA.phantom) {
         instance = await connectWalletWithTimeout(solanaStartPhantom)
-		return instance.publicKey.toString()
-    } else if ( wallet == Config.WALLETS_SOLANA.solflare) {
+        return instance.publicKey.toString()
+    } else if (wallet == Config.WALLETS_SOLANA.solflare) {
         instance = await connectWalletWithTimeout(solanaStartSolflare)
-		return instance.publicKey.toString()
+        return instance.publicKey.toString()
 
-	// Ethereum Wallets
-    } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
+        // Ethereum Wallets
+    } else if (wallet == Config.WALLETS_ETHEREUM.metamask) {
         await ethereumMetamaskVerifyIsLocked()
 
         instance = await connectWalletWithTimeout(ethereumMetamaskStart)
-		await ethereumMetamaskVerifyChain(instance, ethereumChain)
+        await ethereumMetamaskVerifyChain(instance, ethereumChain)
 
-		let metamaskAddr = await instance.eth.requestAccounts()
-		return ethereumGetAllAddresses ? metamaskAddr : metamaskAddr[0]
+        let metamaskAddr = await instance.eth.requestAccounts()
+        return ethereumGetAllAddresses ? metamaskAddr : metamaskAddr[0]
     } else {
         return null
     }
 
     let addrHex = await instance.getUsedAddresses()
 
-    if (typeof(addrHex) === "object" && addrHex.length <= 0) {
+    if (typeof (addrHex) === "object" && addrHex.length <= 0) {
         addrHex = await instance.getChangeAddress()
     }
 
@@ -356,7 +357,7 @@ export const getUsedAddressString = async(wallet = 'nami', options = {}) => {
  * @param {string} wallet
  * @returns mixed
  */
-export const getChangeAddressString = async(wallet = 'nami') => {
+export const getChangeAddressString = async (wallet = 'nami') => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -390,7 +391,7 @@ export const getChangeAddressString = async(wallet = 'nami') => {
  * @param {string} wallet
  * @returns mixed
  */
-export const getUnusedAddressString = async(wallet = 'nami') => {
+export const getUnusedAddressString = async (wallet = 'nami') => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -428,7 +429,7 @@ export const getUnusedAddressString = async(wallet = 'nami') => {
  * @param {string} wallet
  * @returns mixed
  */
-export const getRewardAddressString = async(wallet = 'nami') => {
+export const getRewardAddressString = async (wallet = 'nami') => {
     let instance, addrHex
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -458,9 +459,9 @@ export const getRewardAddressString = async(wallet = 'nami') => {
             return null
         }
     }
-    
+
     // Typhon return address formatted
-    if (typeof(addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
+    if (typeof (addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
         try {
             return addrHex.data
         } catch (error) {}
@@ -478,7 +479,7 @@ export const getRewardAddressString = async(wallet = 'nami') => {
  * @param {string} days
  * @returns string
  */
-export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet", body = {}, days = "7300") => {
+export const getTokenAuth = async (wallet = 'nami', message = "Login with Wallet", body = {}, days = "7300") => {
     let instance, addrHex
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -493,7 +494,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         instance = await connectWalletWithTimeout(startYoroi)
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await connectWalletWithTimeout(startCardwallet)
-    }  else if (wallet == Config.WALLETS_CARDANO.typhon) {
+    } else if (wallet == Config.WALLETS_CARDANO.typhon) {
         instance = await connectWalletWithTimeout(startTyphon)
     } else {
         return null
@@ -512,7 +513,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
     let dataMessageToSign = Buffer.from(message, 'ascii').toString('hex')
 
     // For Typhon Wallet
-    if (typeof(addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
+    if (typeof (addrHex) == "object" && wallet == Config.WALLETS_CARDANO.typhon) {
         try {
             let addrBech32 = await getRewardAddressString(Config.WALLETS_CARDANO.typhon)
 
@@ -529,7 +530,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
         }
     }
 
-    if (typeof(addrHex) == "object") {
+    if (typeof (addrHex) == "object") {
         addrHex = addrHex[0]
     }
 
@@ -543,7 +544,7 @@ export const getTokenAuth = async(wallet = 'nami', message = "Login with Wallet"
  * @param {*} wallet
  * @returns string
  */
-export const getNetworkString = async(wallet = "nami") => {
+export const getNetworkString = async (wallet = "nami") => {
     let instance, nw
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -564,7 +565,7 @@ export const getNetworkString = async(wallet = "nami") => {
         return 'mainnet'
     } else if (wallet == Config.WALLETS_SOLANA.solflare) {
         return 'mainnet'
-    }  else if (wallet == Config.WALLETS_ETHEREUM.metamask) {
+    } else if (wallet == Config.WALLETS_ETHEREUM.metamask) {
         return 'mainnet'
     } else {
         return null
@@ -572,15 +573,15 @@ export const getNetworkString = async(wallet = "nami") => {
 
     try {
 
-		// In Yoroi, yet return only mainnet
-		if (wallet == Config.WALLETS_CARDANO.yoroi) {
-			nw = 1
-		} else {
-			nw = await instance.getNetworkId()
-		}
+        // In Yoroi, yet return only mainnet
+        if (wallet == Config.WALLETS_CARDANO.yoroi) {
+            nw = 1
+        } else {
+            nw = await instance.getNetworkId()
+        }
 
         // In Typhon the network is returned as an object inside the "data" key
-        if (typeof(nw) === "object" && typeof(nw.data) !== "undefined") {
+        if (typeof (nw) === "object" && typeof (nw.data) !== "undefined") {
             nw = nw.data
         }
     } catch (error) {
@@ -596,7 +597,7 @@ export const getNetworkString = async(wallet = "nami") => {
  * @param {*} wallet
  * @returns string
  */
-export const getNetworkId = async(wallet = "nami") => {
+export const getNetworkId = async (wallet = "nami") => {
     let network = await getNetworkString(wallet)
     return network == 'testnet' ? 0 : 1
 }
@@ -607,7 +608,7 @@ export const getNetworkId = async(wallet = "nami") => {
  * @param {string} wallet
  * @returns mixed
  */
-export const extend = async(wallet = "nami") => {
+export const extend = async (wallet = "nami") => {
     let instance
 
     if (wallet == Config.WALLETS_CARDANO.nami) {
@@ -625,14 +626,14 @@ export const extend = async(wallet = "nami") => {
     } else if (wallet == Config.WALLETS_CARDANO.cardwallet) {
         instance = await connectWalletWithTimeout(startCardwallet)
 
-    // Solana Wallets
+        // Solana Wallets
     } else if (wallet == Config.WALLETS_SOLANA.phantom) {
         instance = await connectWalletWithTimeout(solanaStartPhantom)
-    } else if ( wallet == Config.WALLETS_SOLANA.solflare) {
+    } else if (wallet == Config.WALLETS_SOLANA.solflare) {
         instance = await connectWalletWithTimeout(solanaStartSolflare)
 
-	// Ethereum Wallets
-    } else if ( wallet == Config.WALLETS_ETHEREUM.metamask) {
+        // Ethereum Wallets
+    } else if (wallet == Config.WALLETS_ETHEREUM.metamask) {
         await ethereumMetamaskVerifyIsLocked()
         instance = await connectWalletWithTimeout(ethereumMetamaskStart)
     } else {
@@ -641,3 +642,37 @@ export const extend = async(wallet = "nami") => {
 
     return instance
 };
+
+/**
+ * alias for cardano.wallet.api.getUtxos()
+ * @param {string} wallet 
+ * @returns 
+ */
+export const getUtxosHex = async (wallet = "nami") => {
+    let provider = await extend(wallet)
+    return await provider.getUtxos()
+}
+
+/**
+ * assets formatted from cardano.wallet.api.getUtxos()
+ * @param {string} wallet 
+ * @returns 
+ */
+export const getAssetsFromUtxos = async (wallet = "nami") => {
+    let Utxos = await getUtxos()
+    let AssetsRaw = []
+    Utxos.forEach(utx => {
+        AssetsRaw.push(...utx.amount.filter(a => a.unit != 'lovelace'))
+    })
+    let AssetsMap = {}
+
+    for (let k of AssetsRaw) {
+        let quantity = parseInt(k.quantity)
+        if (!AssetsMap[k.unit]) AssetsMap[k.unit] = 0
+        AssetsMap[k.unit] += quantity
+    }
+    return Object.keys(AssetsMap).map(k => ({
+        unit: k,
+        quantity: AssetsMap[k].toString()
+    }))
+}

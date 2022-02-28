@@ -1,6 +1,6 @@
 import Timeout from 'await-timeout';
 
-export const connectWalletWithTimeout = async (callback, timeout = 40000) => {
+export const connectWalletWithTimeout = async (callback, timeout = 60000) => {
     const timer = new Timeout();
     try {
         return await Promise.race([
