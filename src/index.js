@@ -85,7 +85,7 @@ export const getNfts = async (wallet = "nami") => {
     } else {
         return null
     }
-
+    
     balance = await instance.getBalance()
 
     let assetList = [];
@@ -286,7 +286,7 @@ export const getUsedAddressString = async (wallet = 'nami', options = {}) => {
 
     const {
         ethereumChain = null,
-            ethereumGetAllAddresses = false
+        ethereumGetAllAddresses = false
     } = options
 
     if (wallet == Config.WALLETS_CARDANO.nami) {

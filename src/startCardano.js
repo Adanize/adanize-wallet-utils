@@ -353,7 +353,7 @@ export const startNami = async () => {
  * Connect in CardWallet and return instance if success
  * @returns mixed
  */
- export const startCardwallet = async() => {
+export const startCardwallet = async() => {
     return await new Promise((resolve, reject) => {
         if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
             reject({
@@ -368,15 +368,7 @@ export const startNami = async () => {
                     if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet].enable) !== "undefined") {
                         clearInterval(interval)
                         window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet].enable().then((res) => {
-                            if (res.status) {
-                                resolve(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.cardwallet])
-                            } else {
-                                reject({
-                                    code: -2,
-                                    message: Config.MESSAGES.code2.default,
-                                    wallet_key: Config.WALLETS_CARDANO.cardwallet
-                                })
-                            }
+                            resolve(res)
                         }).catch((e) => {
                             if (e.code == -2) {
                                 reject({
