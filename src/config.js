@@ -8,7 +8,7 @@ export const WINDOW_PARENT_WALLETS = {
 export const WALLETS_CARDANO = {
     nami: 'nami',
     ccvault: 'ccvault',
-    gero: 'gero',
+    gero: 'gerowallet',
     flint: 'flint',
     typhon: 'typhon',
     yoroi: 'yoroi',
