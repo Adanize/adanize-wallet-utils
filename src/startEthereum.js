@@ -2,26 +2,36 @@ import * as Web3 from 'web3'
 
 import * as Config from './config'
 
+export const ethereumMetamaskIsInstalled = () => {
+    if (typeof(window[Config.WINDOW_PARENT_WALLETS.ethereum]) == "undefined") {
+        throw {
+            code: -10,
+            message: Config.MESSAGES.notInstalled.metamask,
+            wallet_key: Config.WALLETS_ETHEREUM.metamask
+        }
+    }
+    if (!window[Config.WINDOW_PARENT_WALLETS.ethereum].isMetaMask) {
+        throw {
+            code: -10,
+            message: Config.MESSAGES.notInstalled.metamask,
+            wallet_key: Config.WALLETS_ETHEREUM.metamask
+        }
+    }
+}
+
 /**
  * Start Ethereum Metamask wallet
  * @returns mixed
  */
 export const ethereumMetamaskStart = async() => {
     return await new Promise((resolve, reject) => {
-        if (typeof(window[Config.WINDOW_PARENT_WALLETS.ethereum]) == "undefined") {
-            reject({
-                code: -10,
-                message: Config.MESSAGES.notInstalled.metamask,
-                wallet_key: Config.WALLETS_ETHEREUM.metamask
-            })
+        
+        try {
+            ethereumMetamaskIsInstalled()
+        } catch (error) {
+            reject(error)
         }
-		if (!window[Config.WINDOW_PARENT_WALLETS.ethereum].isMetaMask) {
-            reject({
-                code: -10,
-                message: Config.MESSAGES.notInstalled.metamask,
-                wallet_key: Config.WALLETS_ETHEREUM.metamask
-            })
-        }
+        
         try {
             let metamaskUnlocked
 
@@ -85,6 +95,12 @@ export const ethereumMetamaskStart = async() => {
  * @returns string
  */
 export const ethereumMetamaskVerifyChain = async(web3, ethereumChain) => {
+    try {
+        ethereumMetamaskIsInstalled()
+    } catch (error) {
+        throw error
+    }
+    
 	let chainFromWallet = await web3.eth.getChainId()
 
 	let chains = {
@@ -105,6 +121,12 @@ export const ethereumMetamaskVerifyChain = async(web3, ethereumChain) => {
  };
 
 export const ethereumMetamaskVerifyIsLocked = async() => {
+    try {
+        ethereumMetamaskIsInstalled()
+    } catch (error) {
+        throw error
+    }
+
     let metamaskUnlocked = await window[Config.WINDOW_PARENT_WALLETS.ethereum]._metamask.isUnlocked()
     if (!metamaskUnlocked) {
         throw {
