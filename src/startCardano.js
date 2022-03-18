@@ -135,7 +135,7 @@ export const startNami = async () => {
             reject({
                 code: -10,
                 message: Config.MESSAGES.notInstalled.flint,
-                wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                wallet_key: Config.WALLETS_CARDANO.flint
             })
         }
         try {
@@ -150,7 +150,7 @@ export const startNami = async () => {
                                 reject({
                                     code: -2,
                                     message: Config.MESSAGES.code2.default,
-                                    wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                                    wallet_key: Config.WALLETS_CARDANO.flint
                                 })
                             } else {
                                 reject(e)
@@ -161,7 +161,7 @@ export const startNami = async () => {
                         reject({
                             code: -10,
                             message: Config.MESSAGES.notInstalled.flint,
-                            wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                            wallet_key: Config.WALLETS_CARDANO.flint
                         })
                     }
                 } catch (error) {
@@ -169,7 +169,7 @@ export const startNami = async () => {
                     reject({
                         code: -10,
                         message: Config.MESSAGES.notInstalled.flint,
-                        wallet_key: Config.MESSAGES.WALLETS_CARDANO.flint
+                        wallet_key: Config.WALLETS_CARDANO.flint
                     })
                 }
             }, 500)
