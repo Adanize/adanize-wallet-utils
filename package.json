@@ -1,6 +1,6 @@
 {
     "name": "adanize-wallet-utils",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Utilities for working with Cardano, Ethereum (Metamask) and Solana (phantom, solflare) network wallets",
     "main": "src/index.js",
     "license": "MIT",
