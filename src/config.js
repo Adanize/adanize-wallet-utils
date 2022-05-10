@@ -27,7 +27,7 @@ export const WALLETS_SOLANA = {
 export const MESSAGES = {
     code2: {
         default: 'An error occurred during execution of this API call. One of the possible errors is that you do not have a selected account in your wallet or your wallet may be locked. After verifying what happened, refresh this page and try again!',
-        ccvault: 'An error occurred during execution of this API call. At Eternl you may not have a selected account in your wallet, she may be locked or you may not have activated the DApp Account mode. If so, you can activate it by opening your wallet, clicking on the "Account" tab, after on the "Account List" tab and then on "Enable DApp Account". After verifying what happened, refresh this page and try again!',
+        ccvault: 'An error occurred while executing this API call. At Eternl you may not have an account selected in your wallet, it may be blocked or you may not have activated the DApp Account mode. You can activate it by opening your wallet, clicking on the bottom corner on "DApp Browser" or on a socket icon on Mobile, then click on the "Connect Account" tab, select the account and click on "Connect As DApp Account". After verifying what happened, please refresh this page and try again!',
         solana: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
         ethereum: 'You have refused our site to connect to your wallet. To use the system it is necessary that you give us this permission. We remind you that at no time may we carry out transactions on your behalf without your consent.',
     },
