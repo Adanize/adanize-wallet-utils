@@ -178,6 +178,59 @@ export const startNami = async () => {
         }
     });
 };
+/**
+ * Connect in NuFi and return instance if success
+ * @returns mixed
+ */
+ export const startNuFi = async() => {
+    return await new Promise((resolve, reject) => {
+        if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano]) == "undefined") {
+            reject({
+                code: -10,
+                message: Config.MESSAGES.notInstalled.nufi,
+                wallet_key: Config.WALLETS_CARDANO.nufi
+            })
+        }
+        try {
+            const interval = setInterval(() => {
+                try {
+                    if (typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.nufi]) !== "undefined" && typeof(window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.nufi].enable) !== "undefined") {
+                        clearInterval(interval)
+                        window[Config.WINDOW_PARENT_WALLETS.cardano][Config.WALLETS_CARDANO.nufi].enable().then((res) => {
+                            resolve(res)
+                        }).catch((e) => {
+                            if (e.code == -2) {
+                                reject({
+                                    code: -2,
+                                    message: Config.MESSAGES.code2.default,
+                                    wallet_key: Config.WALLETS_CARDANO.nufi
+                                })
+                            } else {
+                                reject(e)
+                            }
+                        })
+                    } else {
+                        clearInterval(interval)
+                        reject({
+                            code: -10,
+                            message: Config.MESSAGES.notInstalled.nufi,
+                            wallet_key: Config.WALLETS_CARDANO.nufi
+                        })
+                    }
+                } catch (error) {
+                    clearInterval(interval)
+                    reject({
+                        code: -10,
+                        message: Config.MESSAGES.notInstalled.nufi,
+                        wallet_key: Config.WALLETS_CARDANO.nufi
+                    })
+                }
+            }, 500)
+        } catch (error) {
+            reject(e)
+        }
+    });
+};
 
 /**
  * Connect in Gero Wallet and return instance if success
